@@ -1,7 +1,7 @@
 # 💰 Fundora — Smart Student Finance & Budget Tracker
 
 <p align="center">
-  <img src="icons/Logo trans.png" alt="Fundora Logo" width="180"/>
+  <img src="icons/white_logo.png" alt="Fundora Logo" width="180"/>
 </p>
 
 <p align="center">
