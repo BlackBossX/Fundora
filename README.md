@@ -169,7 +169,7 @@ cp -r Fundora/ /opt/lampp/htdocs/fundora
 | P L T Chandunu | EC/2022/058 |
 
 > **Course:** COSC 31103 / BECS 31233 — Web Technologies  
-> **Institution:** University of Ruhuna, Faculty of Engineering
+> **Institution:** University of Kelaniya, Electronics and Computer Science
 
 ---
 
