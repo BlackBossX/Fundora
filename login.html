@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — Fundora</title>
+  <meta name="description" content="Log in to your Fundora account to manage your student finances."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/auth.css"/>
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-bg">
+    <div class="orb orb--1"></div>
+    <div class="orb orb--2"></div>
+  </div>
+
+  <div class="auth-card animate-fade-up">
+    <a href="index.html" class="auth-card__logo">
+      <img src="icons/Logo trans.png" alt="Fundora"/>
+      <span>Fundora</span>
+    </a>
+    <h1 class="auth-card__title">Welcome back</h1>
+    <p class="auth-card__sub">Sign in to your account</p>
+
+    <div id="auth-alert" class="alert alert--danger hidden" style="margin-bottom:16px;"></div>
+
+    <form id="login-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="login-email">Email</label>
+        <input class="form-input" type="email" id="login-email" name="email" placeholder="you@example.com" required/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="login-password">Password</label>
+        <input class="form-input" type="password" id="login-password" name="password" placeholder="••••••••" required/>
+      </div>
+      <button class="btn btn--primary w-full" id="login-btn" type="submit">Sign In</button>
+    </form>
+
+    <p class="auth-card__footer">
+      Don't have an account? <a href="register.html">Create one →</a>
+    </p>
+  </div>
+</div>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

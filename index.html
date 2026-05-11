@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fundora — Smart Student Finance Tracker</title>
+  <meta name="description" content="Fundora helps university students track income, log expenses, set budget limits and visualize spending — all in one beautiful dashboard."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/landing.css"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar__inner">
+    <a href="index.html" class="navbar__logo">
+      <img src="icons/Logo trans.png" alt="Fundora"/>
+      <span class="navbar__logo-text">Fundora</span>
+    </a>
+    <div class="navbar__links">
+      <a href="#features" class="navbar__link">Features</a>
+      <a href="#how" class="navbar__link">How it Works</a>
+      <a href="#team" class="navbar__link">Team</a>
+      <a href="login.html" class="btn btn--outline btn--sm">Login</a>
+      <a href="register.html" class="btn btn--primary btn--sm">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero__bg-orbs">
+    <div class="orb orb--1"></div>
+    <div class="orb orb--2"></div>
+    <div class="orb orb--3"></div>
+  </div>
+  <div class="container hero__content">
+    <div class="hero__badge animate-fade-up">
+      <span class="badge badge--primary">🎓 Built for University Students</span>
+    </div>
+    <h1 class="hero__title animate-fade-up animate-delay-1">
+      Take Control of<br/>
+      <span class="gradient-text">Your Student Budget</span>
+    </h1>
+    <p class="hero__subtitle animate-fade-up animate-delay-2">
+      Fundora centralizes all your finances — income, expenses, alerts and visual reports —
+      so you spend smarter and stress less throughout your academic journey.
+    </p>
+    <div class="hero__cta animate-fade-up animate-delay-3">
+      <a href="register.html" class="btn btn--primary" id="hero-cta-register">Start for Free →</a>
+      <a href="#features" class="btn btn--ghost" id="hero-cta-features">See Features</a>
+    </div>
+
+    <!-- MOCK DASHBOARD PREVIEW -->
+    <div class="hero__preview animate-fade-up animate-delay-4">
+      <div class="preview-card">
+        <div class="preview-card__header">
+          <span class="preview-dot preview-dot--red"></span>
+          <span class="preview-dot preview-dot--yellow"></span>
+          <span class="preview-dot preview-dot--green"></span>
+          <span class="preview-card__title">Dashboard</span>
+        </div>
+        <div class="preview-stats">
+          <div class="preview-stat preview-stat--income">
+            <div class="preview-stat__label">Total Income</div>
+            <div class="preview-stat__value">Rs. 45,200</div>
+          </div>
+          <div class="preview-stat preview-stat--expense">
+            <div class="preview-stat__label">Expenses</div>
+            <div class="preview-stat__value">Rs. 28,750</div>
+          </div>
+          <div class="preview-stat preview-stat--balance">
+            <div class="preview-stat__label">Balance</div>
+            <div class="preview-stat__value">Rs. 16,450</div>
+          </div>
+        </div>
+        <div class="preview-bars">
+          <div class="preview-bar-row">
+            <span>Food</span>
+            <div class="preview-bar"><div class="preview-bar__fill" style="width:72%"></div></div>
+            <span>72%</span>
+          </div>
+          <div class="preview-bar-row">
+            <span>Transport</span>
+            <div class="preview-bar"><div class="preview-bar__fill" style="width:45%"></div></div>
+            <span>45%</span>
+          </div>
+          <div class="preview-bar-row">
+            <span>Entertainment</span>
+            <div class="preview-bar"><div class="preview-bar__fill preview-bar__fill--warn" style="width:89%"></div></div>
+            <span class="text-warning">89%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="badge badge--primary mb-md">✨ Features</span>
+      <h2>Everything you need to <span class="gradient-text">manage money wisely</span></h2>
+      <p>Purpose-built tools for the student lifestyle.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card animate-fade-up" id="feat-income">
+        <div class="feature-card__icon" style="background:rgba(16,185,129,0.15)">📥</div>
+        <h3>Income Tracking</h3>
+        <p>Log scholarships, allowances, and part-time earnings with source labels and notes.</p>
+      </div>
+      <div class="feature-card animate-fade-up animate-delay-1" id="feat-expense">
+        <div class="feature-card__icon" style="background:rgba(239,68,68,0.15)">💸</div>
+        <h3>Expense Logging</h3>
+        <p>Categorize every transaction — Food, Transport, Rent, Entertainment and more.</p>
+      </div>
+      <div class="feature-card animate-fade-up animate-delay-2" id="feat-alerts">
+        <div class="feature-card__icon" style="background:rgba(245,158,11,0.15)">🔔</div>
+        <h3>Budget Alerts</h3>
+        <p>Set monthly limits per category and get real-time warnings before you overspend.</p>
+      </div>
+      <div class="feature-card animate-fade-up animate-delay-3" id="feat-charts">
+        <div class="feature-card__icon" style="background:rgba(108,99,255,0.15)">📊</div>
+        <h3>Visual Reports</h3>
+        <p>Understand your spending at a glance with interactive pie and bar charts.</p>
+      </div>
+      <div class="feature-card animate-fade-up" id="feat-history">
+        <div class="feature-card__icon" style="background:rgba(0,212,170,0.15)">🔍</div>
+        <h3>Transaction History</h3>
+        <p>Search, filter and browse your full financial history by date or category.</p>
+      </div>
+      <div class="feature-card animate-fade-up animate-delay-1" id="feat-mobile">
+        <div class="feature-card__icon" style="background:rgba(99,179,237,0.15)">📱</div>
+        <h3>Mobile Friendly</h3>
+        <p>Fully responsive — works beautifully on phones, tablets and desktops.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section section--alt" id="how">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="badge badge--primary mb-md">🗺️ How it Works</span>
+      <h2>Up and running in <span class="gradient-text">3 simple steps</span></h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card" id="step-1">
+        <div class="step-card__number">01</div>
+        <h3>Create Your Account</h3>
+        <p>Sign up in seconds with your name and email. No credit card required.</p>
+      </div>
+      <div class="step-divider">→</div>
+      <div class="step-card" id="step-2">
+        <div class="step-card__number">02</div>
+        <h3>Log Income & Expenses</h3>
+        <p>Add your income sources and daily expenses in just a few taps.</p>
+      </div>
+      <div class="step-divider">→</div>
+      <div class="step-card" id="step-3">
+        <div class="step-card__number">03</div>
+        <h3>Track & Improve</h3>
+        <p>View your charts, check budget alerts, and make better money decisions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="section" id="team">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="badge badge--primary mb-md">👥 Team</span>
+      <h2>Built by <span class="gradient-text">Engineering Students</span></h2>
+      <p>COSC 31103 / BECS 31233 — Web Technologies · University of Ruhuna</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card" id="member-1">
+        <div class="team-card__avatar">D</div>
+        <h4>T M D P M De Alwis</h4>
+        <span class="badge badge--primary">EC/2022/012</span>
+      </div>
+      <div class="team-card" id="member-2">
+        <div class="team-card__avatar">H</div>
+        <h4>K G H D Bandara</h4>
+        <span class="badge badge--primary">EC/2022/037</span>
+      </div>
+      <div class="team-card" id="member-3">
+        <div class="team-card__avatar">R</div>
+        <h4>T G R Sadeepa</h4>
+        <span class="badge badge--primary">EC/2022/067</span>
+      </div>
+      <div class="team-card" id="member-4">
+        <div class="team-card__avatar">T</div>
+        <h4>P L T Chandunu</h4>
+        <span class="badge badge--primary">EC/2022/058</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section cta-section">
+  <div class="container text-center">
+    <h2>Ready to take control of your <span class="gradient-text">finances?</span></h2>
+    <p>Join Fundora today — it's free for students.</p>
+    <a href="register.html" class="btn btn--primary" id="bottom-cta-btn" style="margin-top:32px;font-size:1.1rem;padding:16px 40px;">
+      Get Started for Free →
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <div class="flex flex-gap-sm" style="align-items:center;margin-bottom:8px;">
+          <img src="icons/Logo trans.png" alt="Fundora" style="height:28px;"/>
+          <span style="font-family:var(--font-heading);font-weight:700;font-size:1.1rem;">Fundora</span>
+        </div>
+        <p style="font-size:0.85rem;">Smart student finance tracker.</p>
+      </div>
+      <div class="footer__links">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="login.html">Login</a>
+        <a href="docs/SETUP.md">Docs</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2025 Fundora · University of Ruhuna, Faculty of Engineering</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>

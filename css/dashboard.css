@@ -1,0 +1,80 @@
+/* =========================================================
+   Fundora — Dashboard Styles
+   ========================================================= */
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Charts */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+.chart-container {
+  position: relative;
+  height: 260px;
+}
+
+/* Budget Progress */
+.budget-item {
+  margin-bottom: var(--space-md);
+}
+
+.budget-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+}
+
+.budget-item__category { font-weight: 600; }
+.budget-item__amounts  { color: var(--color-text-muted); }
+
+/* Sidebar user */
+.sidebar__user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar__user-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.sidebar__user-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.sidebar__user-logout {
+  font-size: 0.78rem;
+  color: var(--color-text-dim);
+}
+
+.sidebar__user-logout:hover {
+  color: var(--color-danger);
+}
+
+/* Transaction type badge */
+.type-income  { color: var(--color-success); font-weight: 600; }
+.type-expense { color: var(--color-danger);  font-weight: 600; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .charts-grid { grid-template-columns: 1fr; }
+}
