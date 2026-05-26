@@ -24,7 +24,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
-            .github/
-            docs/
+            .github/**
+            docs/**
             README.md
             php/db.php.example
