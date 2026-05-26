@@ -36,15 +36,16 @@ function renderIncomeTable() {
     </tr>`).join('');
 }
 
-function handleDeleteIncome(id) {
+async function handleDeleteIncome(id) {
   if (!confirm('Delete this income entry?')) return;
-  deleteIncome(id);
+  await deleteIncome(id);
   renderIncomeTable();
 }
 
 // Modal
 document.addEventListener('DOMContentLoaded', () => {
   renderIncomeTable();
+  window.addEventListener('transactionsSynced', renderIncomeTable);
 
   const openBtn   = document.getElementById('open-income-modal');
   const closeBtn  = document.getElementById('close-income-modal');
@@ -65,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   if (form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const source = document.getElementById('inc-source').value.trim();
       const amount = parseFloat(document.getElementById('inc-amount').value);
@@ -74,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!source || !amount || !date) return;
 
-      addIncome({ source, amount, date, notes });
+      await addIncome({ source, amount, date, notes });
       form.reset();
       if (dateInput) dateInput.value = new Date().toISOString().slice(0,10);
       closeModal('income-modal');

@@ -12,32 +12,87 @@ function saveIncome(data)   { localStorage.setItem(STORAGE.INCOME,   JSON.string
 function saveExpenses(data) { localStorage.setItem(STORAGE.EXPENSES, JSON.stringify(data)); }
 function saveBudgets(data)  { localStorage.setItem(STORAGE.BUDGETS,  JSON.stringify(data)); }
 
-// ── Income CRUD ────────────────────────────────────────────────
-function addIncome(entry) {
-  const income = getIncome();
-  entry.id = Date.now();
-  income.unshift(entry);
-  saveIncome(income);
-  return entry;
+// ── Backend Sync ───────────────────────────────────────────────
+async function syncTransactions() {
+  try {
+    const res = await fetch('php/transactions.php?action=fetch_all');
+    const data = await res.json();
+    if (data.success) {
+      saveIncome(data.income);
+      saveExpenses(data.expenses);
+      window.dispatchEvent(new Event('transactionsSynced'));
+    }
+  } catch (e) {
+    console.error("Failed to sync transactions", e);
+  }
 }
 
-function deleteIncome(id) {
-  const income = getIncome().filter(i => i.id !== id);
-  saveIncome(income);
+// ── Income CRUD ────────────────────────────────────────────────
+async function addIncome(entry) {
+  try {
+    const res = await fetch('php/transactions.php?action=add_income', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(entry)
+    });
+    const data = await res.json();
+    if (data.success) {
+      entry.id = data.id;
+      const income = getIncome();
+      income.unshift(entry);
+      saveIncome(income);
+      return entry;
+    }
+  } catch (e) { console.error(e); }
+}
+
+async function deleteIncome(id) {
+  try {
+    const res = await fetch('php/transactions.php?action=delete_income', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ id })
+    });
+    const data = await res.json();
+    if (data.success) {
+      const income = getIncome().filter(i => String(i.id) !== String(id));
+      saveIncome(income);
+    }
+  } catch (e) { console.error(e); }
 }
 
 // ── Expense CRUD ───────────────────────────────────────────────
-function addExpense(entry) {
-  const expenses = getExpenses();
-  entry.id = Date.now();
-  expenses.unshift(entry);
-  saveExpenses(expenses);
-  return entry;
+async function addExpense(entry) {
+  try {
+    const res = await fetch('php/transactions.php?action=add_expense', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(entry)
+    });
+    const data = await res.json();
+    if (data.success) {
+      entry.id = data.id;
+      const expenses = getExpenses();
+      expenses.unshift(entry);
+      saveExpenses(expenses);
+      return entry;
+    }
+  } catch (e) { console.error(e); }
 }
 
-function deleteExpense(id) {
-  const expenses = getExpenses().filter(e => e.id !== id);
-  saveExpenses(expenses);
+async function deleteExpense(id) {
+  try {
+    const res = await fetch('php/transactions.php?action=delete_expense', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ id })
+    });
+    const data = await res.json();
+    if (data.success) {
+      const expenses = getExpenses().filter(e => String(e.id) !== String(id));
+      saveExpenses(expenses);
+    }
+  } catch (e) { console.error(e); }
 }
 
 // ── Aggregation Helpers ────────────────────────────────────────

@@ -84,4 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set current month on dashboard if element exists
   const monthEl = document.getElementById('current-month');
   if (monthEl) monthEl.textContent = currentMonthLabel();
+
+  // Sync transactions if user is logged in
+  if (getUser() && typeof syncTransactions === 'function') {
+    syncTransactions();
+  }
 });

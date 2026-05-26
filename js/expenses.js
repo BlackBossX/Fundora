@@ -43,14 +43,15 @@ function renderExpenseTable() {
     </tr>`).join('');
 }
 
-function handleDeleteExpense(id) {
+async function handleDeleteExpense(id) {
   if (!confirm('Delete this expense?')) return;
-  deleteExpense(id);
+  await deleteExpense(id);
   renderExpenseTable();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   renderExpenseTable();
+  window.addEventListener('transactionsSynced', renderExpenseTable);
 
   // Category filters
   document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   if (form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const category    = document.getElementById('exp-category').value;
       const amount      = parseFloat(document.getElementById('exp-amount').value);
@@ -89,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!category || !amount || !date) return;
 
-      addExpense({ category, amount, description, date });
+      await addExpense({ category, amount, description, date });
       form.reset();
       if (dateInput) dateInput.value = new Date().toISOString().slice(0,10);
       closeModal('expense-modal');
