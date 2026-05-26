@@ -14,7 +14,7 @@ function showAlert(msg, type = 'danger') {
 // ── LOGIN ──────────────────────────────────────────────────────
 const loginForm = document.getElementById('login-form');
 if (loginForm) {
-  loginForm.addEventListener('submit', (e) => {
+  loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email    = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
@@ -24,25 +24,31 @@ if (loginForm) {
       return;
     }
 
-    // Check against stored users
-    const users = JSON.parse(localStorage.getItem('fundora_users') || '[]');
-    const user  = users.find(u => u.email === email && u.password === btoa(password));
+    try {
+      const response = await fetch('php/auth.php?action=login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ email, password })
+      });
+      const data = await response.json();
 
-    if (!user) {
-      showAlert('Invalid email or password.');
-      return;
+      if (data.success) {
+        localStorage.setItem(STORAGE.USER, JSON.stringify(data.user));
+        location.href = 'dashboard.html';
+      } else {
+        showAlert(data.message || 'Invalid email or password.');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      showAlert('An error occurred during login. Is the local PHP server running?');
     }
-
-    // Store session
-    localStorage.setItem(STORAGE.USER, JSON.stringify({ id: user.id, name: user.name, email: user.email }));
-    location.href = 'dashboard.html';
   });
 }
 
 // ── REGISTER ───────────────────────────────────────────────────
 const registerForm = document.getElementById('register-form');
 if (registerForm) {
-  registerForm.addEventListener('submit', (e) => {
+  registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name     = document.getElementById('reg-name').value.trim();
     const email    = document.getElementById('reg-email').value.trim();
@@ -62,16 +68,23 @@ if (registerForm) {
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem('fundora_users') || '[]');
-    if (users.find(u => u.email === email)) {
-      showAlert('An account with this email already exists.');
-      return;
-    }
+    try {
+      const response = await fetch('php/auth.php?action=register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ name, email, password })
+      });
+      const data = await response.json();
 
-    const newUser = { id: Date.now(), name, email, password: btoa(password) };
-    users.push(newUser);
-    localStorage.setItem('fundora_users', JSON.stringify(users));
-    localStorage.setItem(STORAGE.USER, JSON.stringify({ id: newUser.id, name, email }));
-    location.href = 'dashboard.html';
+      if (data.success) {
+        showAlert('Account created successfully! Redirecting...', 'success');
+        setTimeout(() => location.href = 'login.html', 1500);
+      } else {
+        showAlert(data.message || 'Registration failed.');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      showAlert('An error occurred during registration. Is the local PHP server running?');
+    }
   });
 }
