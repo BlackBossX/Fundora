@@ -31,9 +31,5 @@ CREATE TABLE expenses (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- (Optional) Create a specific user for your app:
-CREATE USER 'fundora'@'localhost' IDENTIFIED BY 'fundora123';
-GRANT ALL PRIVILEGES ON fundora_db.* TO 'fundora'@'localhost';
-FLUSH PRIVILEGES;
 
 exit;

@@ -53,15 +53,16 @@ function renderHistory() {
   }).join('');
 }
 
-function handleDeleteTxn(type, id) {
+async function handleDeleteTxn(type, id) {
   if (!confirm('Delete this transaction?')) return;
-  if (type === 'income') deleteIncome(id);
-  else deleteExpense(id);
+  if (type === 'income') await deleteIncome(id);
+  else await deleteExpense(id);
   renderHistory();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   renderHistory();
+  window.addEventListener('transactionsSynced', renderHistory);
 
   ['hist-search','hist-type','hist-from','hist-to'].forEach(id => {
     document.getElementById(id)?.addEventListener('input', renderHistory);

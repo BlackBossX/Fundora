@@ -85,4 +85,7 @@ function renderRecentTransactions() {
   }).join('');
 }
 
-document.addEventListener('DOMContentLoaded', renderDashboard);
+document.addEventListener('DOMContentLoaded', () => {
+  renderDashboard();
+  window.addEventListener('transactionsSynced', renderDashboard);
+});
