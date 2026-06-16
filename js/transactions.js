@@ -40,6 +40,7 @@ async function syncBudgets() {
     const data = await res.json();
     if (data.success) {
       saveBudgets(data.budgets);
+      window.dispatchEvent(new Event('budgetsSynced'));
     }
   } catch (e) {
     console.error("Failed to sync budgets", e);

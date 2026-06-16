@@ -52,6 +52,7 @@ async function handleDeleteExpense(id) {
 document.addEventListener('DOMContentLoaded', () => {
   renderExpenseTable();
   window.addEventListener('transactionsSynced', renderExpenseTable);
+  window.addEventListener('budgetsSynced',      renderExpenseTable);
 
   // Category filters
   document.querySelectorAll('.filter-btn').forEach(btn => {
