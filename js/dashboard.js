@@ -88,4 +88,5 @@ function renderRecentTransactions() {
 document.addEventListener('DOMContentLoaded', () => {
   renderDashboard();
   window.addEventListener('transactionsSynced', renderDashboard);
+  window.addEventListener('budgetsSynced',      renderDashboard);
 });
