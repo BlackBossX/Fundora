@@ -1,7 +1,20 @@
 # Fundora API Reference
 
-> **Base URL:** `https://<your-domain>/php`  
-> All endpoints require an active PHP session (login first). Replace `<your-domain>` with your InfinityFree domain (e.g. `myfundora.rf.gd`).
+> **Base URL:** `https://fundora.free.nf/php`  
+> All endpoints require an active PHP session (login first).
+
+---
+
+## InfinityFree Bypass (Crucial for cURL/Postman)
+
+InfinityFree uses a security system designed to prevent bot access. If you test these endpoints using `curl` or Postman without the security cookie, you will get:
+`curl: (52) Empty reply from server`
+
+### How to Bypass:
+1. Open `https://fundora.free.nf` in your browser.
+2. Open Developer Tools (F12) -> **Application** (or **Storage**) -> **Cookies**.
+3. Copy the value of the **`__test`** cookie.
+4. Pass this cookie in all external API requests as a header.
 
 ---
 
@@ -21,7 +34,8 @@ Content-Type: application/x-www-form-urlencoded
 
 **curl:**
 ```bash
-curl -X POST "https://<your-domain>/php/auth.php?action=register" \
+curl -X POST "https://fundora.free.nf/php/auth.php?action=register" \
+  -H "Cookie: __test=YOUR_TEST_COOKIE" \
   -d "name=John&email=john@example.com&password=secret123"
 ```
 **Response:**
@@ -42,17 +56,17 @@ Content-Type: application/x-www-form-urlencoded
 | email | string | yes |
 | password | string | yes |
 
-**curl** *(save the session cookie!)*:
+**curl** *(save the session cookie to cookies.txt)*:
 ```bash
-curl -c cookies.txt -X POST "https://<your-domain>/php/auth.php?action=login" \
-  -d "email=john@example.com&password=secret123"
+curl -c cookies.txt -X POST "https://fundora.free.nf/php/auth.php?action=login" \
+  -H "Cookie: __test=YOUR_TEST_COOKIE" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "email=bossblack@gmail.com&password=testpass"
 ```
 **Response:**
 ```json
 { "success": true, "user": { "id": 1, "name": "John" } }
 ```
-
-> **Important:** Save `cookies.txt`. All subsequent requests need `-b cookies.txt` to send the session cookie.
 
 ---
 
@@ -61,7 +75,8 @@ curl -c cookies.txt -X POST "https://<your-domain>/php/auth.php?action=login" \
 GET /auth.php?action=logout
 ```
 ```bash
-curl -b cookies.txt "https://<your-domain>/php/auth.php?action=logout"
+curl -b cookies.txt -H "Cookie: __test=YOUR_TEST_COOKIE" \
+  "https://fundora.free.nf/php/auth.php?action=logout"
 ```
 **Response:**
 ```json
@@ -77,7 +92,8 @@ curl -b cookies.txt "https://<your-domain>/php/auth.php?action=logout"
 GET /transactions.php?action=fetch_all
 ```
 ```bash
-curl -b cookies.txt "https://<your-domain>/php/transactions.php?action=fetch_all"
+curl -b cookies.txt -H "Cookie: __test=YOUR_TEST_COOKIE" \
+  "https://fundora.free.nf/php/transactions.php?action=fetch_all"
 ```
 **Response:**
 ```json
@@ -108,7 +124,8 @@ Content-Type: application/x-www-form-urlencoded
 | notes | string | no |
 
 ```bash
-curl -b cookies.txt -X POST "https://<your-domain>/php/transactions.php?action=add_income" \
+curl -b cookies.txt -H "Cookie: __test=YOUR_TEST_COOKIE" \
+  -X POST "https://fundora.free.nf/php/transactions.php?action=add_income" \
   -d "source=Freelance&amount=15000&date=2025-06-10&notes=Web project"
 ```
 **Response:**
@@ -132,8 +149,9 @@ Content-Type: application/x-www-form-urlencoded
 | description | string | no | |
 
 ```bash
-curl -b cookies.txt -X POST "https://<your-domain>/php/transactions.php?action=add_expense" \
-  -d "category=Food&amount=850&date=2025-06-12&description=Restaurant dinner"
+curl -b cookies.txt -H "Cookie: __test=YOUR_TEST_COOKIE" \
+  -X POST "https://fundora.free.nf/php/transactions.php?action=add_expense" \
+  -d "category=Food&amount=850&date=2025-06-12&description=Restaurant"
 ```
 **Response:**
 ```json
@@ -152,7 +170,8 @@ Content-Type: application/x-www-form-urlencoded
 | id | integer | yes |
 
 ```bash
-curl -b cookies.txt -X POST "https://<your-domain>/php/transactions.php?action=delete_income" \
+curl -b cookies.txt -H "Cookie: __test=YOUR_TEST_COOKIE" \
+  -X POST "https://fundora.free.nf/php/transactions.php?action=delete_income" \
   -d "id=5"
 ```
 **Response:**
@@ -168,7 +187,8 @@ POST /transactions.php?action=delete_expense
 Content-Type: application/x-www-form-urlencoded
 ```
 ```bash
-curl -b cookies.txt -X POST "https://<your-domain>/php/transactions.php?action=delete_expense" \
+curl -b cookies.txt -H "Cookie: __test=YOUR_TEST_COOKIE" \
+  -X POST "https://fundora.free.nf/php/transactions.php?action=delete_expense" \
   -d "id=12"
 ```
 **Response:**
@@ -185,7 +205,8 @@ curl -b cookies.txt -X POST "https://<your-domain>/php/transactions.php?action=d
 GET /budgets.php?action=fetch
 ```
 ```bash
-curl -b cookies.txt "https://<your-domain>/php/budgets.php?action=fetch"
+curl -b cookies.txt -H "Cookie: __test=YOUR_TEST_COOKIE" \
+  "https://fundora.free.nf/php/budgets.php?action=fetch"
 ```
 **Response:**
 ```json
@@ -206,10 +227,9 @@ curl -b cookies.txt "https://<your-domain>/php/budgets.php?action=fetch"
 POST /budgets.php?action=save
 Content-Type: application/json
 ```
-Body: a `budgets` JSON object mapping category to monthly limit in Rs.
-
 ```bash
-curl -b cookies.txt -X POST "https://<your-domain>/php/budgets.php?action=save" \
+curl -b cookies.txt -H "Cookie: __test=YOUR_TEST_COOKIE" \
+  -X POST "https://fundora.free.nf/php/budgets.php?action=save" \
   -H "Content-Type: application/json" \
   -d '{"budgets":{"Food":5000,"Transport":2000,"Rent":20000,"Health":3000}}'
 ```
@@ -218,39 +238,9 @@ curl -b cookies.txt -X POST "https://<your-domain>/php/budgets.php?action=save" 
 { "success": true }
 ```
 
-> Uses `INSERT ... ON DUPLICATE KEY UPDATE` so it is safe to call repeatedly.
-
 ---
 
-## Error Responses
-
-All endpoints return the same error shape:
-```json
-{ "success": false, "message": "Reason for failure" }
-```
-
-| Scenario | message |
-|----------|---------|
-| Not logged in | Unauthorized |
-| Unknown action | Invalid action or method |
-| Add failure | Failed to add income / Failed to add expense |
-| Delete failure | Failed to delete income / Failed to delete expense |
-| DB connection error | Database Connection Failed: ... |
-
----
-
-## Postman Quick Setup
-
-1. Create a Collection called `Fundora`.
-2. Set Collection Variable: `base_url = https://<your-domain>/php`
-3. Postman stores cookies automatically — just run **Login** first.
-4. Use `{{base_url}}/auth.php?action=login` etc. for each request.
-
----
-
-## SQL: budgets table
-
-Run this in phpMyAdmin or InfinityFree MySQL panel if tables already exist:
+## SQL Table for Budgets
 
 ```sql
 CREATE TABLE IF NOT EXISTS budgets (
