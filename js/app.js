@@ -85,8 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const monthEl = document.getElementById('current-month');
   if (monthEl) monthEl.textContent = currentMonthLabel();
 
-  // Sync transactions if user is logged in
-  if (getUser() && typeof syncTransactions === 'function') {
-    syncTransactions();
+  // Sync transactions + budgets from DB if user is logged in
+  if (getUser()) {
+    if (typeof syncTransactions === 'function') syncTransactions();
+    if (typeof syncBudgets      === 'function') syncBudgets();
   }
 });

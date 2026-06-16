@@ -1,8 +1,39 @@
 /**
- * settings.js — Settings page logic
+ * settings.js — Settings page logic (with DB-backed budgets)
  */
 
 const CATEGORIES = ['Food','Transport','Rent','Entertainment','Health','Education','Other'];
+
+// ── Budget Backend Sync ────────────────────────────────────────
+
+async function fetchBudgetsFromDB() {
+  try {
+    const res  = await fetch('php/budgets.php?action=fetch&_=' + Date.now());
+    const data = await res.json();
+    if (data.success) {
+      saveBudgets(data.budgets);   // update localStorage with DB truth
+    }
+  } catch (e) {
+    console.error('Failed to fetch budgets', e);
+  }
+}
+
+async function saveBudgetsToDB(budgets) {
+  try {
+    const res  = await fetch('php/budgets.php?action=save', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ budgets })
+    });
+    const data = await res.json();
+    return data.success;
+  } catch (e) {
+    console.error('Failed to save budgets', e);
+    return false;
+  }
+}
+
+// ── Render ─────────────────────────────────────────────────────
 
 function renderBudgetLimits() {
   const grid = document.getElementById('budget-limits-grid');
@@ -28,7 +59,9 @@ function renderBudgetLimits() {
     </div>`).join('');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// ── DOMContentLoaded ────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', async () => {
   // Load profile
   const user = getUser();
   if (user) {
@@ -38,6 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (emailEl) emailEl.value = user.email || '';
   }
 
+  // Load budgets from DB first, then render
+  await fetchBudgetsFromDB();
   renderBudgetLimits();
 
   // Save profile
@@ -55,28 +90,37 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => msg?.classList.add('hidden'), 3000);
   });
 
-  // Save budgets
-  document.getElementById('save-budgets-btn')?.addEventListener('click', () => {
+  // Save budgets → localStorage + DB
+  document.getElementById('save-budgets-btn')?.addEventListener('click', async () => {
     const budgets = {};
     document.querySelectorAll('.budget-limit-input').forEach(input => {
       const val = parseFloat(input.value);
       if (val > 0) budgets[input.dataset.cat] = val;
     });
+
+    // Save locally immediately (fast UI)
     saveBudgets(budgets);
 
     const btn = document.getElementById('save-budgets-btn');
+    if (btn) btn.textContent = 'Saving…';
+
+    // Persist to DB
+    const ok = await saveBudgetsToDB(budgets);
+
     if (btn) {
-      btn.textContent = '✓ Saved!';
+      btn.textContent = ok ? '✓ Saved!' : '⚠ Local only (DB error)';
       setTimeout(() => btn.textContent = 'Save All Limits', 2000);
     }
   });
 
   // Clear data
-  document.getElementById('clear-data-btn')?.addEventListener('click', () => {
+  document.getElementById('clear-data-btn')?.addEventListener('click', async () => {
     if (!confirm('This will permanently delete ALL your income, expenses and budgets. Are you sure?')) return;
     localStorage.removeItem(STORAGE.INCOME);
     localStorage.removeItem(STORAGE.EXPENSES);
     localStorage.removeItem(STORAGE.BUDGETS);
+    // Also wipe budgets on server (save empty object)
+    await saveBudgetsToDB({});
     alert('All data cleared.');
     renderBudgetLimits();
   });

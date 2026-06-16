@@ -34,6 +34,18 @@ async function syncTransactions() {
   }
 }
 
+async function syncBudgets() {
+  try {
+    const res  = await fetch('php/budgets.php?action=fetch&_=' + Date.now());
+    const data = await res.json();
+    if (data.success) {
+      saveBudgets(data.budgets);
+    }
+  } catch (e) {
+    console.error("Failed to sync budgets", e);
+  }
+}
+
 // ── Income CRUD ────────────────────────────────────────────────
 async function addIncome(entry) {
   _mutationsInFlight++;
