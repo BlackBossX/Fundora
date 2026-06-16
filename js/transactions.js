@@ -1,6 +1,5 @@
 /**
- * transactions.js — CRUD for income & expenses via localStorage
- * For production: replace with fetch() calls to php/transactions.php
+ * transactions.js — CRUD for income & expenses via localStorage + PHP backend
  */
 
 // ── Data Access ────────────────────────────────────────────────
@@ -12,12 +11,20 @@ function saveIncome(data)   { localStorage.setItem(STORAGE.INCOME,   JSON.string
 function saveExpenses(data) { localStorage.setItem(STORAGE.EXPENSES, JSON.stringify(data)); }
 function saveBudgets(data)  { localStorage.setItem(STORAGE.BUDGETS,  JSON.stringify(data)); }
 
+// ── Mutation guard ─────────────────────────────────────────────
+// Tracks how many add/delete operations are currently in-flight.
+// syncTransactions must NOT overwrite localStorage while this is > 0.
+let _mutationsInFlight = 0;
+
 // ── Backend Sync ───────────────────────────────────────────────
 async function syncTransactions() {
+  // Don't let a background sync clobber data from an in-progress write
+  if (_mutationsInFlight > 0) return;
   try {
-    const res = await fetch('php/transactions.php?action=fetch_all');
+    const res = await fetch('php/transactions.php?action=fetch_all&_=' + Date.now());
     const data = await res.json();
-    if (data.success) {
+    // Double-check: a mutation may have started while we were awaiting the response
+    if (data.success && _mutationsInFlight === 0) {
       saveIncome(data.income);
       saveExpenses(data.expenses);
       window.dispatchEvent(new Event('transactionsSynced'));
@@ -29,6 +36,7 @@ async function syncTransactions() {
 
 // ── Income CRUD ────────────────────────────────────────────────
 async function addIncome(entry) {
+  _mutationsInFlight++;
   try {
     const res = await fetch('php/transactions.php?action=add_income', {
       method: 'POST',
@@ -41,12 +49,21 @@ async function addIncome(entry) {
       const income = getIncome();
       income.unshift(entry);
       saveIncome(income);
+      _mutationsInFlight--;
+      // Re-sync from DB after write so localStorage is always authoritative
+      syncTransactions();
       return entry;
+    } else {
+      _mutationsInFlight--;
     }
-  } catch (e) { console.error(e); }
+  } catch (e) {
+    _mutationsInFlight--;
+    console.error(e);
+  }
 }
 
 async function deleteIncome(id) {
+  _mutationsInFlight++;
   try {
     const res = await fetch('php/transactions.php?action=delete_income', {
       method: 'POST',
@@ -58,11 +75,17 @@ async function deleteIncome(id) {
       const income = getIncome().filter(i => String(i.id) !== String(id));
       saveIncome(income);
     }
-  } catch (e) { console.error(e); }
+    _mutationsInFlight--;
+    syncTransactions();
+  } catch (e) {
+    _mutationsInFlight--;
+    console.error(e);
+  }
 }
 
 // ── Expense CRUD ───────────────────────────────────────────────
 async function addExpense(entry) {
+  _mutationsInFlight++;
   try {
     const res = await fetch('php/transactions.php?action=add_expense', {
       method: 'POST',
@@ -75,12 +98,20 @@ async function addExpense(entry) {
       const expenses = getExpenses();
       expenses.unshift(entry);
       saveExpenses(expenses);
+      _mutationsInFlight--;
+      syncTransactions();
       return entry;
+    } else {
+      _mutationsInFlight--;
     }
-  } catch (e) { console.error(e); }
+  } catch (e) {
+    _mutationsInFlight--;
+    console.error(e);
+  }
 }
 
 async function deleteExpense(id) {
+  _mutationsInFlight++;
   try {
     const res = await fetch('php/transactions.php?action=delete_expense', {
       method: 'POST',
@@ -92,7 +123,12 @@ async function deleteExpense(id) {
       const expenses = getExpenses().filter(e => String(e.id) !== String(id));
       saveExpenses(expenses);
     }
-  } catch (e) { console.error(e); }
+    _mutationsInFlight--;
+    syncTransactions();
+  } catch (e) {
+    _mutationsInFlight--;
+    console.error(e);
+  }
 }
 
 // ── Aggregation Helpers ────────────────────────────────────────
