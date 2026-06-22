@@ -61,4 +61,11 @@
   .goals-grid { grid-template-columns:1fr; }
   .goal-analysis-grid { grid-template-columns:1fr; }
   .goals-page-header,.goal-detail-heading { align-items:flex-start; flex-direction:column; }
+  .goal-card__amounts,.goal-card__footer { align-items:flex-start; flex-direction:column; }
+  .goal-card__analysis { grid-template-columns:1fr; }
+  .goal-card__actions .btn { flex:1 1 135px; }
+  .goal-form-actions { flex-direction:column-reverse; }
+  .goal-form-actions .btn { width:100%; }
+  .net-source-toggle { width:100%; justify-content:center; }
+  .goal-chart { height:240px; }
 }

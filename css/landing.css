@@ -374,4 +374,11 @@
 
 @media (max-width: 480px) {
   .team-grid { grid-template-columns: 1fr; }
+  .hero { padding-top: 52px; }
+  .hero__title { font-size: 2.1rem; }
+  .hero__subtitle { font-size: 1rem; }
+  .hero__cta .btn { width: 100%; }
+  .preview-card { padding: 14px; }
+  .preview-bar-row { grid-template-columns: 72px minmax(0,1fr) 34px; gap: 7px; }
+  .footer__inner,.footer__links { align-items: center; flex-direction: column; }
 }

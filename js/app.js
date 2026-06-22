@@ -101,6 +101,19 @@ const CAT_EMOJI = {
   Entertainment: '🎮', Health: '💊', Education: '📚', Other: '📦',
 };
 
+function incomeEmoji(source = '') {
+  const value = source.toLowerCase();
+  if (value.includes('salary') || value.includes('wage') || value.includes('pay')) return '💼';
+  if (value.includes('scholarship') || value.includes('grant')) return '🎓';
+  if (value.includes('freelance') || value.includes('project')) return '💻';
+  if (value.includes('allowance')) return '💵';
+  if (value.includes('gift') || value.includes('bonus')) return '🎁';
+  if (value.includes('investment') || value.includes('interest') || value.includes('dividend')) return '📈';
+  if (value.includes('refund') || value.includes('reimbursement')) return '↩️';
+  if (value.includes('business') || value.includes('sale')) return '🏪';
+  return '💰';
+}
+
 // ── Init ───────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   requireAuth();

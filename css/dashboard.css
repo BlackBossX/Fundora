@@ -166,3 +166,24 @@
   .charts-grid { grid-template-columns: 1fr; }
   .dashboard-goals { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 520px) {
+  .chart-container { height: 225px; }
+  .dashboard-goal__header,
+  .dashboard-goal__footer,
+  .dashboard-goal__meta,
+  .dashboard-bill {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .dashboard-bill__amount { text-align: left; }
+  .dashboard-bill-summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .budget-item__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .dashboard-chart-section__header { align-items: flex-start; }
+}
