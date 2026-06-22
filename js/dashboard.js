@@ -24,11 +24,45 @@ function renderDashboard() {
   // Savings goals
   renderDashboardGoals();
 
+  // Bill reminders
+  renderDashboardBills();
+
   // Recent transactions
   renderRecentTransactions();
 
   // Charts
   initCharts();
+}
+
+async function renderDashboardBills() {
+  const container = document.getElementById('dashboard-bills');
+  const alertsBox = document.getElementById('dashboard-bill-alerts');
+  if (!container) return;
+  try {
+    const response = await fetch('php/bills.php?action=fetch_all&_=' + Date.now());
+    const data = await response.json();
+    if (!data.success) throw new Error(data.message || 'Unable to load bills');
+    const active = data.bills.filter(bill => bill.status === 'Active').slice(0, 3);
+    const summary = data.summary || {};
+    alertsBox.innerHTML = (data.alerts || []).slice(0, 2).map(alert => {
+      const cls = alert.type === 'overdue' ? 'danger' : 'warning';
+      const text = alert.type === 'overdue' ? `${Math.abs(alert.days)} days overdue` : alert.days === 0 ? 'Due today' : `Due in ${alert.days} days`;
+      return `<div class="alert alert--${cls} mb-sm"><strong>${escapeDashboardHtml(alert.name)}</strong>&nbsp;${text} · ${formatRs(alert.amount)}</div>`;
+    }).join('');
+    if (!active.length) {
+      container.innerHTML = `<p class="text-muted">No upcoming bills. <a href="bills.html">Add one →</a></p>`;
+      return;
+    }
+    container.innerHTML = active.map(bill => {
+      const days = Math.ceil((new Date(bill.due_date + 'T00:00:00') - new Date().setHours(0,0,0,0)) / 86400000);
+      return `<a href="bills.html" class="dashboard-bill">
+        <div><strong>${escapeDashboardHtml(bill.name)}</strong><span>${escapeDashboardHtml(bill.provider || bill.category)}</span></div>
+        <div class="dashboard-bill__amount">${formatRs(bill.amount_due)}<span>${days < 0 ? Math.abs(days)+' days overdue' : days === 0 ? 'Due today' : 'Due '+formatDate(bill.due_date)}</span></div>
+      </a>`;
+    }).join('') + `<div class="dashboard-bill-summary"><span>${summary.bills_due_this_month || 0} due this month</span><strong>${formatRs(summary.amount_due_this_month || 0)}</strong><span>${summary.overdue_count || 0} overdue</span></div>`;
+  } catch (error) {
+    container.innerHTML = `<p class="text-muted">Bills are unavailable until the database migration is installed.</p>`;
+  }
 }
 
 async function renderDashboardGoals() {

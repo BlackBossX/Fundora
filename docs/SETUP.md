@@ -55,6 +55,9 @@ To add Goals & Savings to an existing installation, also import
 For the “Add from Net Amount” transfer option, import
 `database/migrate_net_goal_contributions.sql` once as well.
 
+To add Bill Payment Reminders, import
+`database/migrate_bill_reminders.sql` once.
+
 ---
 
 ## Step 4 — Configure Database Connection

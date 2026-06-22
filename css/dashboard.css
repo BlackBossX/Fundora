@@ -84,6 +84,14 @@
   gap: 10px;
 }
 
+.dashboard-bills { display:flex; flex-direction:column; gap:9px; }
+.dashboard-bill { display:flex; justify-content:space-between; gap:14px; align-items:center; padding:13px 15px; background:var(--color-bg-3); border:1px solid var(--color-border); border-radius:var(--radius-md); color:var(--color-text); }
+.dashboard-bill:hover { color:var(--color-text); border-color:rgba(245,158,11,.45); }
+.dashboard-bill div:first-child span,.dashboard-bill__amount span { display:block; color:var(--color-text-muted); font-size:.75rem; margin-top:3px; }
+.dashboard-bill__amount { text-align:right; font-weight:700; white-space:nowrap; }
+.dashboard-bill-summary { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:12px 15px; color:var(--color-text-muted); font-size:.8rem; }
+.dashboard-bill-summary strong { color:var(--color-warning); }
+
 .dashboard-goal__meta {
   align-items: center;
   margin: 9px 0 4px;

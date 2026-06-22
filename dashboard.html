@@ -6,7 +6,7 @@
   <title>Dashboard — Fundora</title>
   <meta name="description" content="Your Fundora financial dashboard — overview of income, expenses, balance and budget alerts."/>
   <link rel="stylesheet" href="css/style.css?v=1.2"/>
-  <link rel="stylesheet" href="css/dashboard.css?v=1.2"/>
+  <link rel="stylesheet" href="css/dashboard.css?v=1.4"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -55,6 +55,8 @@
   <main class="main-content">
     <!-- Budget Alerts -->
     <div id="alerts-container" class="mb-lg"></div>
+    <!-- Upcoming / overdue bill alerts -->
+    <div id="dashboard-bill-alerts" class="mb-lg"></div>
 
     <div class="page-header flex-between">
       <div>
@@ -130,6 +132,15 @@
       </div>
     </div>
 
+    <!-- Bill Reminders -->
+    <div class="card card--flat mb-xl">
+      <div class="flex-between mb-lg">
+        <div><h3 class="card-title">Upcoming Bills</h3><p class="text-muted dashboard-section-sub">Payments that need your attention</p></div>
+        <a href="bills.html" class="btn btn--ghost btn--sm">Manage Bills</a>
+      </div>
+      <div id="dashboard-bills" class="dashboard-bills"><p class="text-muted">No upcoming bills. <a href="bills.html">Add one →</a></p></div>
+    </div>
+
     <!-- Recent Transactions -->
     <div class="card card--flat">
       <div class="flex-between mb-lg">
@@ -156,7 +167,7 @@
   </main>
 </div>
 
-<script src="js/app.js?v=1.2"></script>
+<script src="js/app.js?v=1.4"></script>
 <script src="js/transactions.js?v=1.2"></script>
 <script src="js/alerts.js?v=1.2"></script>
 <script src="js/charts.js?v=1.2"></script>

@@ -52,6 +52,7 @@ Whether you receive an allowance, a scholarship, or part-time income — Fundora
 | 💸 **Expense Logging** | Record daily expenses by category: Food, Transport, Rent, Entertainment |
 | 🔔 **Budget Alerts** | Set daily, weekly, and monthly limits per category and receive real-time warnings when approaching or exceeding them |
 | 🎯 **Goals & Savings** | Create savings targets, record deposits and withdrawals, schedule monthly contributions, and analyze progress |
+| 🧾 **Bill Reminders** | Track recurring bills, configure multiple reminders, record payments, and monitor overdue accounts |
 | 📊 **Visual Reports** | Interactive pie and bar charts displaying spending breakdowns |
 | 🔍 **History & Filters** | Browse full transaction history filtered by date, category, or amount |
 | 📱 **Responsive UI** | Mobile-friendly interface that works seamlessly on phones, tablets, and desktops |

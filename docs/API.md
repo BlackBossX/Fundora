@@ -268,3 +268,13 @@ Goal contributions support these user actions:
 `GET /goals.php?action=fetch_all` also returns `available_net_amount` and
 `current_month_goal_cash_movement`. Net transfers reduce cash-in-hand, while
 withdrawals return money to it.
+
+---
+
+## Bill Reminders
+
+- `GET /bills.php?action=fetch_all` — bills, alerts, monthly summary, and payment history.
+- `POST /bills.php?action=create` — create one-time or recurring bills.
+- `POST /bills.php?action=update` — edit bill and reminder settings.
+- `POST /bills.php?action=mark_paid` — record payment and advance recurring bills.
+- `POST /bills.php?action=delete` — delete a bill and its payment history.

@@ -74,6 +74,18 @@ function initSidebar() {
     nav.insertBefore(goalsLink, historyLink);
   }
 
+  if (nav && !nav.querySelector('a[href="bills.html"]')) {
+    const billsLink = document.createElement('a');
+    billsLink.href = 'bills.html';
+    billsLink.className = 'sidebar__nav-item';
+    billsLink.id = 'nav-bills';
+    billsLink.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 2h12v20l-3-2-3 2-3-2-3 2V2z"/><path d="M9 7h6M9 11h6"/>
+    </svg>Bill Reminders`;
+    const historyLink = nav.querySelector('a[href="history.html"]');
+    nav.insertBefore(billsLink, historyLink);
+  }
+
   if (nameEl && user)   nameEl.textContent   = user.name || 'User';
   if (avatarEl && user) avatarEl.textContent = (user.name || 'U')[0].toUpperCase();
   if (logoutEl) logoutEl.addEventListener('click', (e) => { e.preventDefault(); logout(); });
