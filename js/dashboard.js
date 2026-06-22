@@ -47,7 +47,7 @@ async function renderDashboardBills() {
     alertsBox.innerHTML = (data.alerts || []).slice(0, 2).map(alert => {
       const cls = alert.type === 'overdue' ? 'danger' : 'warning';
       const text = alert.type === 'overdue' ? `${Math.abs(alert.days)} days overdue` : alert.days === 0 ? 'Due today' : `Due in ${alert.days} days`;
-      return `<div class="alert alert--${cls} mb-sm"><strong>${escapeDashboardHtml(alert.name)}</strong>&nbsp;${text} · ${formatRs(alert.amount)}</div>`;
+      return `<div class="alert alert--${cls} mb-sm"><span aria-hidden="true">⚠️</span><strong>${escapeDashboardHtml(alert.name)}:</strong>&nbsp;${text} · ${formatRs(alert.amount)}</div>`;
     }).join('');
     if (!active.length) {
       container.innerHTML = `<p class="text-muted">No upcoming bills. <a href="bills.html">Add one →</a></p>`;

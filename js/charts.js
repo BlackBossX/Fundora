@@ -9,6 +9,8 @@ const CHART_COLORS = [
 
 let pieChart = null;
 let barChart = null;
+let todayCashflowChart = null;
+let todayCategoryChart = null;
 
 function initCharts() {
   // ── Pie Chart: Spending by Category ────────────────────────
@@ -95,6 +97,100 @@ function initCharts() {
       scales: {
         x: { ticks: { color: '#8B90B8' }, grid: { color: 'rgba(255,255,255,0.04)' } },
         y: { ticks: { color: '#8B90B8', callback: v => 'Rs.' + v.toLocaleString() }, grid: { color: 'rgba(255,255,255,0.06)' } },
+      },
+    },
+  });
+
+  initTodayCharts();
+}
+
+function initTodayCharts() {
+  const cashflowCtx = document.getElementById('today-cashflow-chart');
+  const categoryCtx = document.getElementById('today-category-chart');
+  if (!cashflowCtx || !categoryCtx) return;
+
+  const now = new Date();
+  const dateLabel = document.getElementById('today-chart-date');
+  if (dateLabel) {
+    dateLabel.textContent = now.toLocaleDateString('en-GB', {
+      weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
+    });
+  }
+
+  const isToday = dateStr => {
+    const date = new Date(dateStr + 'T00:00:00');
+    return date.getFullYear() === now.getFullYear()
+      && date.getMonth() === now.getMonth()
+      && date.getDate() === now.getDate();
+  };
+
+  const todayIncome = getIncome()
+    .filter(item => isToday(item.date))
+    .reduce((sum, item) => sum + Number(item.amount), 0);
+  const todayExpenses = getExpenses()
+    .filter(item => isToday(item.date))
+    .reduce((sum, item) => sum + Number(item.amount), 0);
+
+  if (todayCashflowChart) todayCashflowChart.destroy();
+  todayCashflowChart = new Chart(cashflowCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Today'],
+      datasets: [
+        { label: 'Income', data: [todayIncome], backgroundColor: 'rgba(16,185,129,0.78)', borderRadius: 8 },
+        { label: 'Expenses', data: [todayExpenses], backgroundColor: 'rgba(239,68,68,0.78)', borderRadius: 8 },
+      ],
+    },
+    options: {
+      plugins: {
+        legend: { labels: { color: '#8B90B8' } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${formatRs(ctx.parsed.y)}` } },
+      },
+      scales: {
+        x: { ticks: { color: '#8B90B8' }, grid: { display: false } },
+        y: {
+          beginAtZero: true,
+          ticks: { color: '#8B90B8', callback: value => 'Rs.' + Number(value).toLocaleString() },
+          grid: { color: 'rgba(255,255,255,0.06)' },
+        },
+      },
+    },
+  });
+
+  const categoryTotals = {};
+  getExpenses()
+    .filter(item => isToday(item.date))
+    .forEach(item => {
+      categoryTotals[item.category] = (categoryTotals[item.category] || 0) + Number(item.amount);
+    });
+
+  const categories = Object.keys(categoryTotals);
+  if (todayCategoryChart) todayCategoryChart.destroy();
+  todayCategoryChart = new Chart(categoryCtx, {
+    type: 'doughnut',
+    data: {
+      labels: categories.length
+        ? categories.map(category => `${CAT_EMOJI[category] || ''} ${category}`)
+        : ['No expenses today'],
+      datasets: [{
+        data: categories.length ? Object.values(categoryTotals) : [1],
+        backgroundColor: categories.length ? CHART_COLORS : ['rgba(139,144,184,0.22)'],
+        borderWidth: 2,
+        borderColor: '#1A1E33',
+      }],
+    },
+    options: {
+      cutout: '65%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: '#8B90B8', font: { size: 12 }, padding: 16 },
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => categories.length ? ` ${formatRs(ctx.parsed)}` : ' No spending recorded',
+          },
+        },
       },
     },
   });

@@ -6,7 +6,7 @@
   <title>Dashboard — Fundora</title>
   <meta name="description" content="Your Fundora financial dashboard — overview of income, expenses, balance and budget alerts."/>
   <link rel="stylesheet" href="css/style.css?v=1.2"/>
-  <link rel="stylesheet" href="css/dashboard.css?v=1.4"/>
+  <link rel="stylesheet" href="css/dashboard.css?v=1.5"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
@@ -110,6 +110,30 @@
       </div>
     </div>
 
+    <!-- Today's Overview -->
+    <div class="dashboard-chart-section mb-xl">
+      <div class="dashboard-chart-section__header">
+        <div>
+          <h3 class="card-title">Today's Overview</h3>
+          <p class="text-muted dashboard-section-sub" id="today-chart-date">Current-day financial activity</p>
+        </div>
+      </div>
+      <div class="charts-grid">
+        <div class="card card--flat">
+          <h3 class="card-title mb-md">Today's Income vs Expenses</h3>
+          <div class="chart-container">
+            <canvas id="today-cashflow-chart"></canvas>
+          </div>
+        </div>
+        <div class="card card--flat">
+          <h3 class="card-title mb-md">Today's Spending by Category</h3>
+          <div class="chart-container">
+            <canvas id="today-category-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Budget Progress -->
     <div class="card card--flat mb-xl">
       <h3 class="card-title mb-lg">Budget Progress</h3>
@@ -170,7 +194,7 @@
 <script src="js/app.js?v=1.4"></script>
 <script src="js/transactions.js?v=1.2"></script>
 <script src="js/alerts.js?v=1.2"></script>
-<script src="js/charts.js?v=1.2"></script>
+<script src="js/charts.js?v=1.3"></script>
 <script src="js/dashboard.js?v=1.3"></script>
 </body>
 </html>

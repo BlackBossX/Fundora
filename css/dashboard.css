@@ -20,6 +20,13 @@
   height: 260px;
 }
 
+.dashboard-chart-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
 /* Budget Progress */
 .budget-item {
   margin-bottom: var(--space-md);
