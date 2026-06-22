@@ -43,20 +43,31 @@ sudo cp -r /path/to/Fundora /opt/lampp/htdocs/fundora
 2. Click **New** in the left sidebar
 3. Name the database: `fundora_db`
 4. Click **Create**
-5. Click **Import** tab → choose `php/fundora_db.sql` → click **Go**
+5. Click **Import** tab → choose `database/database.sql` → click **Go**
+
+If you already installed an older Fundora database, import
+`database/migrate_budget_periods.sql` once instead. Existing limits will be
+kept as monthly limits.
+
+To add Goals & Savings to an existing installation, also import
+`database/migrate_goals_savings.sql` once.
+
+For the “Add from Net Amount” transfer option, import
+`database/migrate_net_goal_contributions.sql` once as well.
 
 ---
 
 ## Step 4 — Configure Database Connection
 
-Edit `php/config.php`:
+Copy `php/db.php.example` to `php/db.php`, then edit `php/db.php` if your
+database credentials differ from XAMPP's defaults.
 
 ```php
 <?php
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');       // your MySQL username
-define('DB_PASS', '');           // your MySQL password (blank by default in XAMPP)
-define('DB_NAME', 'fundora_db');
+$host = "localhost";
+$dbname = "fundora_db";
+$user = "root";
+$pass = "";
 ?>
 ```
 

@@ -3,6 +3,7 @@
  */
 
 const CATEGORIES = ['Food','Transport','Rent','Entertainment','Health','Education','Other'];
+const BUDGET_PERIODS = ['daily','weekly','monthly'];
 
 // ── Budget Backend Sync ────────────────────────────────────────
 
@@ -41,22 +42,31 @@ function renderBudgetLimits() {
 
   const budgets = getBudgets();
 
-  grid.innerHTML = CATEGORIES.map(cat => `
+  grid.innerHTML = `
+    <div class="budget-limit-header" aria-hidden="true">
+      <span>Category</span>
+      <span>Daily</span>
+      <span>Weekly</span>
+      <span>Monthly</span>
+    </div>
+    ${CATEGORIES.map(cat => `
     <div class="budget-limit-row">
       <label class="budget-limit-label">
         <span>${CAT_EMOJI[cat]||''} ${cat}</span>
       </label>
-      <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
-        <span style="color:var(--color-text-muted);font-size:0.85rem;">Rs.</span>
-        <input class="form-input budget-limit-input"
-          type="number" min="0" step="100"
-          id="budget-${cat.toLowerCase()}"
-          data-cat="${cat}"
-          placeholder="No limit"
-          value="${budgets[cat] || ''}"
-          style="max-width:160px;"/>
-      </div>
-    </div>`).join('');
+      ${BUDGET_PERIODS.map(period => `
+        <label class="budget-limit-field">
+          <span class="budget-period-mobile-label">${period}</span>
+          <span class="budget-currency">Rs.</span>
+          <input class="form-input budget-limit-input"
+            type="number" min="0" step="100"
+            id="budget-${period}-${cat.toLowerCase()}"
+            data-cat="${cat}"
+            data-period="${period}"
+            placeholder="No limit"
+            value="${budgets[period]?.[cat] || ''}"/>
+        </label>`).join('')}
+    </div>`).join('')}`;
 }
 
 // ── DOMContentLoaded ────────────────────────────────────────────
@@ -92,10 +102,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Save budgets → localStorage + DB
   document.getElementById('save-budgets-btn')?.addEventListener('click', async () => {
-    const budgets = {};
+    const budgets = { daily: {}, weekly: {}, monthly: {} };
     document.querySelectorAll('.budget-limit-input').forEach(input => {
       const val = parseFloat(input.value);
-      if (val > 0) budgets[input.dataset.cat] = val;
+      if (val > 0) budgets[input.dataset.period][input.dataset.cat] = val;
     });
 
     // Save locally immediately (fast UI)
@@ -119,8 +129,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     localStorage.removeItem(STORAGE.INCOME);
     localStorage.removeItem(STORAGE.EXPENSES);
     localStorage.removeItem(STORAGE.BUDGETS);
-    // Also wipe budgets on server (save empty object)
-    await saveBudgetsToDB({});
+    // Also wipe budgets on server.
+    await saveBudgetsToDB({ daily: {}, weekly: {}, monthly: {} });
     alert('All data cleared.');
     renderBudgetLimits();
   });

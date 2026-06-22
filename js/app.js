@@ -60,6 +60,19 @@ function initSidebar() {
   const nameEl   = document.getElementById('sidebar-name');
   const avatarEl = document.getElementById('sidebar-avatar');
   const logoutEl = document.getElementById('logout-btn');
+  const nav = document.querySelector('.sidebar__nav');
+
+  if (nav && !nav.querySelector('a[href="goals.html"]')) {
+    const goalsLink = document.createElement('a');
+    goalsLink.href = 'goals.html';
+    goalsLink.className = 'sidebar__nav-item';
+    goalsLink.id = 'nav-goals';
+    goalsLink.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>
+    </svg>Goals & Savings`;
+    const historyLink = nav.querySelector('a[href="history.html"]');
+    nav.insertBefore(goalsLink, historyLink);
+  }
 
   if (nameEl && user)   nameEl.textContent   = user.name || 'User';
   if (avatarEl && user) avatarEl.textContent = (user.name || 'U')[0].toUpperCase();

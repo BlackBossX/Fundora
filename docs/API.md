@@ -213,9 +213,9 @@ curl -b cookies.txt -H "Cookie: __test=YOUR_TEST_COOKIE" \
 {
   "success": true,
   "budgets": {
-    "Food": 5000,
-    "Transport": 2000,
-    "Rent": 20000
+    "daily": { "Food": 1000 },
+    "weekly": { "Transport": 3000 },
+    "monthly": { "Rent": 20000 }
   }
 }
 ```
@@ -231,7 +231,7 @@ Content-Type: application/json
 curl -b cookies.txt -H "Cookie: __test=YOUR_TEST_COOKIE" \
   -X POST "https://fundora.free.nf/php/budgets.php?action=save" \
   -H "Content-Type: application/json" \
-  -d '{"budgets":{"Food":5000,"Transport":2000,"Rent":20000,"Health":3000}}'
+  -d '{"budgets":{"daily":{"Food":1000},"weekly":{"Transport":3000},"monthly":{"Rent":20000,"Health":3000}}}'
 ```
 **Response:**
 ```json
@@ -247,9 +247,24 @@ CREATE TABLE IF NOT EXISTS budgets (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     category ENUM('Food','Transport','Rent','Entertainment','Health','Education','Other') NOT NULL,
+    period ENUM('daily','weekly','monthly') NOT NULL DEFAULT 'monthly',
     amount DECIMAL(10,2) NOT NULL DEFAULT 0,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE KEY unique_user_category (user_id, category),
+    UNIQUE KEY unique_user_category_period (user_id, category, period),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 ```
+
+---
+
+## Goal Contributions
+
+Goal contributions support these user actions:
+
+- `Deposit` — adds savings without changing the user's net amount.
+- `NetTransfer` — adds savings and deducts the amount from available net funds.
+- `Withdrawal` — reduces the goal's saved amount.
+
+`GET /goals.php?action=fetch_all` also returns `available_net_amount` and
+`current_month_goal_cash_movement`. Net transfers reduce cash-in-hand, while
+withdrawals return money to it.

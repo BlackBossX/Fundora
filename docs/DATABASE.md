@@ -15,7 +15,7 @@ fundora_db
 ├── users           — Registered accounts
 ├── income          — Income entries per user
 ├── expenses        — Expense entries per user
-└── budgets         — Monthly budget limits per category
+└── budgets         — Daily, weekly, and monthly limits per category
 ```
 
 ---
@@ -102,17 +102,18 @@ CREATE TABLE expenses (
 
 ## Table: `budgets`
 
-Stores monthly budget limits per expense category per user.
+Stores daily, weekly, and monthly budget limits per expense category per user.
 
 ```sql
 CREATE TABLE budgets (
     id          INT AUTO_INCREMENT PRIMARY KEY,
     user_id     INT NOT NULL,
     category    ENUM('Food', 'Transport', 'Rent', 'Entertainment', 'Health', 'Education', 'Other') NOT NULL,
-    monthly_limit DECIMAL(10, 2) NOT NULL,
+    period      ENUM('daily', 'weekly', 'monthly') NOT NULL DEFAULT 'monthly',
+    amount      DECIMAL(10, 2) NOT NULL,
     updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_budget (user_id, category)
+    UNIQUE KEY unique_budget (user_id, category, period)
 );
 ```
 
@@ -121,7 +122,8 @@ CREATE TABLE budgets (
 | `id` | INT | Primary key |
 | `user_id` | INT | FK → users.id |
 | `category` | ENUM | Budget category |
-| `monthly_limit` | DECIMAL(10,2) | Spending cap in LKR |
+| `period` | ENUM | Daily, weekly, or monthly limit period |
+| `amount` | DECIMAL(10,2) | Spending cap in LKR |
 | `updated_at` | TIMESTAMP | Last update timestamp |
 
 ---
@@ -185,10 +187,11 @@ CREATE TABLE budgets (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     category ENUM('Food','Transport','Rent','Entertainment','Health','Education','Other') NOT NULL,
-    monthly_limit DECIMAL(10, 2) NOT NULL,
+    period ENUM('daily','weekly','monthly') NOT NULL DEFAULT 'monthly',
+    amount DECIMAL(10, 2) NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_budget (user_id, category)
+    UNIQUE KEY unique_budget (user_id, category, period)
 );
 
 -- Test user (password: password123)

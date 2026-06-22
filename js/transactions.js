@@ -5,7 +5,20 @@
 // ── Data Access ────────────────────────────────────────────────
 function getIncome()   { return JSON.parse(localStorage.getItem(STORAGE.INCOME)   || '[]'); }
 function getExpenses() { return JSON.parse(localStorage.getItem(STORAGE.EXPENSES) || '[]'); }
-function getBudgets()  { return JSON.parse(localStorage.getItem(STORAGE.BUDGETS)  || '{}'); }
+function getBudgets()  {
+  const stored = JSON.parse(localStorage.getItem(STORAGE.BUDGETS) || '{}');
+
+  // Upgrade the old flat monthly format without losing local data.
+  if (!stored.daily && !stored.weekly && !stored.monthly) {
+    return { daily: {}, weekly: {}, monthly: stored };
+  }
+
+  return {
+    daily: stored.daily || {},
+    weekly: stored.weekly || {},
+    monthly: stored.monthly || {},
+  };
+}
 
 function saveIncome(data)   { localStorage.setItem(STORAGE.INCOME,   JSON.stringify(data)); }
 function saveExpenses(data) { localStorage.setItem(STORAGE.EXPENSES, JSON.stringify(data)); }
@@ -163,6 +176,39 @@ function expensesByCategory(month = true) {
     .filter(e => !month || isThisMonth(e.date))
     .forEach(e => {
       map[e.category] = (map[e.category] || 0) + parseFloat(e.amount);
+    });
+  return map;
+}
+
+function isDateInBudgetPeriod(dateStr, period) {
+  const date = new Date(dateStr + 'T00:00:00');
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  if (period === 'daily') {
+    return date.getTime() === today.getTime();
+  }
+
+  if (period === 'weekly') {
+    const day = today.getDay();
+    const daysSinceMonday = day === 0 ? 6 : day - 1;
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - daysSinceMonday);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+    return date >= weekStart && date <= weekEnd;
+  }
+
+  return date.getMonth() === today.getMonth()
+    && date.getFullYear() === today.getFullYear();
+}
+
+function expensesByCategoryForPeriod(period = 'monthly') {
+  const map = {};
+  getExpenses()
+    .filter(expense => isDateInBudgetPeriod(expense.date, period))
+    .forEach(expense => {
+      map[expense.category] = (map[expense.category] || 0) + parseFloat(expense.amount);
     });
   return map;
 }

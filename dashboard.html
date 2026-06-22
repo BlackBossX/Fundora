@@ -82,7 +82,7 @@
         <div class="stat-card__icon" style="background:rgba(108,99,255,0.15)">⚖️</div>
         <div class="stat-card__label">Net Balance</div>
         <div class="stat-card__value" id="stat-balance">Rs. 0</div>
-        <div class="stat-card__sub">Income − Expenses</div>
+        <div class="stat-card__sub">Income − Expenses − Goal transfers</div>
       </div>
       <div class="stat-card stat-card--budget">
         <div class="stat-card__icon" style="background:rgba(245,158,11,0.15)">🔔</div>
@@ -116,6 +116,20 @@
       </div>
     </div>
 
+    <!-- Savings Goals -->
+    <div class="card card--flat mb-xl">
+      <div class="flex-between mb-lg">
+        <div>
+          <h3 class="card-title">Savings Goals</h3>
+          <p class="text-muted dashboard-section-sub">Your highest-priority active targets</p>
+        </div>
+        <a href="goals.html" class="btn btn--ghost btn--sm">Manage Goals</a>
+      </div>
+      <div id="dashboard-goals" class="dashboard-goals">
+        <p class="text-muted">No savings goals yet. <a href="goals.html">Create one →</a></p>
+      </div>
+    </div>
+
     <!-- Recent Transactions -->
     <div class="card card--flat">
       <div class="flex-between mb-lg">
@@ -146,6 +160,6 @@
 <script src="js/transactions.js?v=1.2"></script>
 <script src="js/alerts.js?v=1.2"></script>
 <script src="js/charts.js?v=1.2"></script>
-<script src="js/dashboard.js?v=1.2"></script>
+<script src="js/dashboard.js?v=1.3"></script>
 </body>
 </html>

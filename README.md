@@ -50,7 +50,8 @@ Whether you receive an allowance, a scholarship, or part-time income — Fundora
 |---|---|
 | 📥 **Income Tracking** | Log multiple income sources (allowances, scholarships, part-time pay) with dates and notes |
 | 💸 **Expense Logging** | Record daily expenses by category: Food, Transport, Rent, Entertainment |
-| 🔔 **Budget Alerts** | Set monthly limits per category and receive real-time warnings when approaching or exceeding them |
+| 🔔 **Budget Alerts** | Set daily, weekly, and monthly limits per category and receive real-time warnings when approaching or exceeding them |
+| 🎯 **Goals & Savings** | Create savings targets, record deposits and withdrawals, schedule monthly contributions, and analyze progress |
 | 📊 **Visual Reports** | Interactive pie and bar charts displaying spending breakdowns |
 | 🔍 **History & Filters** | Browse full transaction history filtered by date, category, or amount |
 | 📱 **Responsive UI** | Mobile-friendly interface that works seamlessly on phones, tablets, and desktops |

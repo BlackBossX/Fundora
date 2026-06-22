@@ -16,39 +16,54 @@ $action  = $_GET['action'] ?? '';
 
 // ── GET: fetch all budgets for this user ─────────────────────────
 if ($_SERVER["REQUEST_METHOD"] === "GET" && $action === "fetch") {
-    $stmt = $pdo->prepare("SELECT category, amount FROM budgets WHERE user_id = ?");
+    $stmt = $pdo->prepare("SELECT category, period, amount FROM budgets WHERE user_id = ?");
     $stmt->execute([$user_id]);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Return as { category: amount } map
-    $budgets = [];
+    $budgets = [
+        "daily" => [],
+        "weekly" => [],
+        "monthly" => []
+    ];
     foreach ($rows as $row) {
-        $budgets[$row['category']] = (float)$row['amount'];
+        $period = $row['period'];
+        if (isset($budgets[$period])) {
+            $budgets[$period][$row['category']] = (float)$row['amount'];
+        }
     }
     echo json_encode(["success" => true, "budgets" => $budgets]);
     exit;
 }
 
-// ── POST: save (upsert) all budgets ─────────────────────────────
+// POST: replace all daily, weekly, and monthly budgets
 if ($_SERVER["REQUEST_METHOD"] === "POST" && $action === "save") {
-    // Expect JSON body: { "budgets": { "Food": 5000, "Rent": 10000, ... } }
+    // Expected: { "budgets": { "daily": {...}, "weekly": {...}, "monthly": {...} } }
     $body = json_decode(file_get_contents("php://input"), true);
     $budgets = $body['budgets'] ?? [];
 
     $valid_categories = ['Food','Transport','Rent','Entertainment','Health','Education','Other'];
+    $valid_periods = ['daily','weekly','monthly'];
 
     $stmt = $pdo->prepare(
-        "INSERT INTO budgets (user_id, category, amount)
-         VALUES (?, ?, ?)
-         ON DUPLICATE KEY UPDATE amount = VALUES(amount), updated_at = CURRENT_TIMESTAMP"
+        "INSERT INTO budgets (user_id, category, period, amount)
+         VALUES (?, ?, ?, ?)"
     );
+    $deleteStmt = $pdo->prepare("DELETE FROM budgets WHERE user_id = ?");
 
     $pdo->beginTransaction();
     try {
-        foreach ($budgets as $category => $amount) {
-            if (!in_array($category, $valid_categories)) continue;
-            $amount = max(0, (float)$amount);
-            $stmt->execute([$user_id, $category, $amount]);
+        $deleteStmt->execute([$user_id]);
+
+        foreach ($valid_periods as $period) {
+            $periodBudgets = $budgets[$period] ?? [];
+            if (!is_array($periodBudgets)) continue;
+
+            foreach ($periodBudgets as $category => $amount) {
+                if (!in_array($category, $valid_categories, true)) continue;
+                $amount = max(0, (float)$amount);
+                if ($amount <= 0) continue;
+                $stmt->execute([$user_id, $category, $period, $amount]);
+            }
         }
         $pdo->commit();
         echo json_encode(["success" => true]);
