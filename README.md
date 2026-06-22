@@ -1,7 +1,7 @@
 # 💰 Fundora — Smart Student Finance & Budget Tracker
 
 <p align="center">
-  <img src="icons/white_logo.png" alt="Fundora Logo" width="180"/>
+  <img src="assets/icons/white_logo.png" alt="Fundora Logo" width="180"/>
 </p>
 
 <p align="center">
@@ -50,7 +50,9 @@ Whether you receive an allowance, a scholarship, or part-time income — Fundora
 |---|---|
 | 📥 **Income Tracking** | Log multiple income sources (allowances, scholarships, part-time pay) with dates and notes |
 | 💸 **Expense Logging** | Record daily expenses by category: Food, Transport, Rent, Entertainment |
-| 🔔 **Budget Alerts** | Set monthly limits per category and receive real-time warnings when approaching or exceeding them |
+| 🔔 **Budget Alerts** | Set daily, weekly, and monthly limits per category and receive real-time warnings when approaching or exceeding them |
+| 🎯 **Goals & Savings** | Create savings targets, record deposits and withdrawals, schedule monthly contributions, and analyze progress |
+| 🧾 **Bill Reminders** | Track recurring bills, configure multiple reminders, record payments, and monitor overdue accounts |
 | 📊 **Visual Reports** | Interactive pie and bar charts displaying spending breakdowns |
 | 🔍 **History & Filters** | Browse full transaction history filtered by date, category, or amount |
 | 📱 **Responsive UI** | Mobile-friendly interface that works seamlessly on phones, tablets, and desktops |
@@ -76,41 +78,45 @@ Whether you receive an allowance, a scholarship, or part-time income — Fundora
 
 ```
 Fundora/
-├── index.html              # Landing page
-├── dashboard.html          # Main dashboard with charts
-├── income.html             # Income tracking page
-├── expenses.html           # Expense logging page
-├── history.html            # Transaction history & filters
-├── settings.html           # Budget limits & profile settings
+├── index.html
+├── login.html
+├── register.html
 │
-├── css/
-│   ├── style.css           # Global styles & design tokens
-│   ├── dashboard.css       # Dashboard-specific styles
-│   └── components.css      # Reusable component styles
+├── app/
+│   ├── dashboard.html
+│   ├── income.html
+│   ├── expenses.html
+│   ├── history.html
+│   ├── settings.html
+│   ├── goals.html
+│   └── bills.html
 │
-├── js/
-│   ├── app.js              # Core application logic
-│   ├── charts.js           # Chart.js visualization setup
-│   ├── transactions.js     # Transaction CRUD operations
-│   └── alerts.js           # Budget alert logic
+├── assets/
+│   ├── css/
+│   ├── js/
+│   └── icons/
 │
 ├── php/
-│   ├── config.php          # Database configuration
-│   ├── auth.php            # Authentication (login/register)
-│   ├── transactions.php    # Transaction API endpoints
-│   └── budgets.php         # Budget management endpoints
+│   ├── db.php.example
+│   ├── auth.php
+│   ├── transactions.php
+│   ├── budgets.php
+│   ├── goals.php
+│   └── bills.php
 │
-├── icons/
-│   └── Logo trans.png      # Fundora logo
+├── database/
+│   ├── schema/
+│   │   └── database.sql
+│   └── migrations/
 │
 ├── docs/
-│   ├── ARCHITECTURE.md     # System architecture details
-│   ├── DATABASE.md         # Database schema documentation
-│   ├── API.md              # PHP API endpoint reference
-│   └── SETUP.md            # Detailed setup guide
+│   ├── SETUP.md
+│   ├── ARCHITECTURE.md
+│   ├── API.md
+│   ├── DATABASE.md
+│   └── Fundora_Proposal.pdf
 │
-├── README.md               # This file
-└── Fundora_Proposal.pdf    # Original project proposal
+└── .github/
 ```
 
 ---
@@ -135,10 +141,10 @@ cp -r Fundora/ /opt/lampp/htdocs/fundora
 # 3. Import the database
 # Open http://localhost/phpmyadmin
 # Create a database named 'fundora_db'
-# Import: php/fundora_db.sql
+# Import: database/schema/database.sql
 
 # 4. Configure the database connection
-# Edit php/config.php with your credentials
+# Copy php/db.php.example to php/db.php and edit if needed
 
 # 5. Open the project
 # Navigate to: http://localhost/fundora
@@ -151,11 +157,15 @@ cp -r Fundora/ /opt/lampp/htdocs/fundora
 | Page | File | Description |
 |---|---|---|
 | 🏠 Landing | `index.html` | Hero, features overview, CTA to sign up |
-| 📊 Dashboard | `dashboard.html` | Summary cards, charts, recent transactions |
-| 📥 Income | `income.html` | Add/edit income entries |
-| 💸 Expenses | `expenses.html` | Add/edit expense entries by category |
-| 🔍 History | `history.html` | Searchable, filterable transaction log |
-| ⚙️ Settings | `settings.html` | Set budget limits, manage profile |
+| 🔐 Login | `login.html` | User sign in |
+| 📝 Register | `register.html` | Create a new account |
+| 📊 Dashboard | `app/dashboard.html` | Summary cards, charts, recent transactions |
+| 📥 Income | `app/income.html` | Add/edit income entries |
+| 💸 Expenses | `app/expenses.html` | Add/edit expense entries by category |
+| 🎯 Goals | `app/goals.html` | Savings goals and contributions |
+| 🧾 Bills | `app/bills.html` | Bill reminders and payments |
+| 🔍 History | `app/history.html` | Searchable, filterable transaction log |
+| ⚙️ Settings | `app/settings.html` | Set budget limits, manage profile |
 
 ---
 

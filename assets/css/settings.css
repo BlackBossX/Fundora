@@ -1,0 +1,95 @@
+/* =========================================================
+   Fundora — Settings Page Extras
+   ========================================================= */
+
+.budget-limit-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) repeat(3, minmax(145px, 0.8fr));
+  gap: 14px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.budget-limit-row:last-child {
+  border-bottom: none;
+}
+
+.budget-limit-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text);
+  min-width: 160px;
+}
+
+.budget-limit-header {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) repeat(3, minmax(145px, 0.8fr));
+  gap: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.budget-limit-header span:not(:first-child) {
+  text-align: center;
+}
+
+.budget-limit-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.budget-limit-input {
+  min-width: 0;
+}
+
+.budget-currency {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+}
+
+.budget-period-mobile-label {
+  display: none;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  text-transform: capitalize;
+}
+
+@media (max-width: 1050px) {
+  .budget-limit-header {
+    display: none;
+  }
+
+  .budget-limit-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 18px 0;
+  }
+
+  .budget-period-mobile-label {
+    display: inline-block;
+    width: 58px;
+    flex-shrink: 0;
+  }
+
+  .budget-currency {
+    width: 22px;
+  }
+}
+
+@media (max-width: 520px) {
+  .budget-limit-field {
+    display: grid;
+    grid-template-columns: 58px 24px minmax(0, 1fr);
+  }
+  .budget-limit-label { min-width: 0; }
+}

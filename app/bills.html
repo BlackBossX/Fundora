@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Bill Reminders — Fundora</title>
+  <link rel="stylesheet" href="../assets/css/style.css?v=1.5"/><link rel="stylesheet" href="../assets/css/dashboard.css?v=1.6"/><link rel="stylesheet" href="../assets/css/bills.css?v=1.1"/>
+</head>
+<body>
+<div class="layout-with-sidebar">
+  <aside class="sidebar">
+    <a href="../index.html" class="sidebar__logo"><img src="../assets/icons/Logo trans.png" alt="Fundora"/><span class="sidebar__logo-text">Fundora</span></a>
+    <nav class="sidebar__nav">
+      <a href="dashboard.html" class="sidebar__nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</a>
+      <a href="income.html" class="sidebar__nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Income</a>
+      <a href="expenses.html" class="sidebar__nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/></svg>Expenses</a>
+      <a href="goals.html" class="sidebar__nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/></svg>Goals & Savings</a>
+      <a href="bills.html" class="sidebar__nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h12v20l-3-2-3 2-3-2-3 2V2z"/><path d="M9 7h6M9 11h6"/></svg>Bill Reminders</a>
+      <a href="history.html" class="sidebar__nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3M3 12a9 9 0 1018 0 9 9 0 00-18 0"/></svg>History</a>
+      <a href="settings.html" class="sidebar__nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+    </nav>
+    <div class="sidebar__footer"><div class="sidebar__user"><div class="sidebar__user-avatar" id="sidebar-avatar">U</div><div><div class="sidebar__user-name" id="sidebar-name">User</div><a href="#" id="logout-btn" class="sidebar__user-logout">Sign out</a></div></div></div>
+  </aside>
+  <main class="main-content">
+    <div class="page-header flex-between bills-header"><div><h1 class="page-header__title">Bill Payment Reminders</h1><p class="page-header__sub">Stay ahead of due dates and keep every payment accounted for.</p></div><button class="btn btn--primary btn--sm" id="open-bill-modal">+ Add Bill</button></div>
+    <div id="bill-toast" class="alert alert--success hidden mb-lg"></div>
+    <div id="bill-alerts" class="bill-alerts mb-lg"></div>
+    <div class="stats-grid">
+      <div class="stat-card stat-card--balance"><div class="stat-card__label">Bills Due This Month</div><div class="stat-card__value" id="bills-month-count">0</div></div>
+      <div class="stat-card stat-card--budget"><div class="stat-card__label">Amount Due</div><div class="stat-card__value" id="bills-month-amount">Rs. 0</div></div>
+      <div class="stat-card stat-card--income"><div class="stat-card__label">Next Bill</div><div class="stat-card__value bill-next-value" id="bills-next">—</div></div>
+      <div class="stat-card stat-card--expense"><div class="stat-card__label">Overdue</div><div class="stat-card__value" id="bills-overdue">0</div></div>
+    </div>
+    <div class="card card--flat bills-toolbar mb-lg">
+      <div class="form-group mb-0"><label class="form-label">Search</label><input class="form-input" id="bill-search" placeholder="Search bills or providers..."/></div>
+      <div class="form-group mb-0"><label class="form-label">Status</label><select class="form-select" id="bill-filter"><option value="all">All</option><option value="upcoming">Upcoming</option><option value="overdue">Overdue</option><option value="paid">Paid</option></select></div>
+    </div>
+    <div id="bills-grid" class="bills-grid"></div>
+    <div class="card card--flat mt-bills">
+      <div class="flex-between mb-lg"><div><h3 class="card-title">Recently Paid</h3><p class="text-muted bills-sub">Your latest payment confirmations</p></div></div>
+      <div class="table-wrapper"><table class="table"><thead><tr><th>Payment Date</th><th>Bill</th><th>Provider</th><th>Due Date</th><th class="text-right">Amount</th></tr></thead><tbody id="paid-bills-body"></tbody></table></div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="bill-modal"><div class="modal bill-modal">
+  <div class="modal__header"><h3 id="bill-modal-title">Add New Bill</h3><button class="modal__close" data-close="bill-modal">✕</button></div>
+  <form id="bill-form"><input type="hidden" id="bill-id"/>
+    <div class="bill-form-grid">
+      <div class="form-group bill-wide"><label class="form-label">Bill Name</label><input class="form-input" id="bill-name" placeholder="Electricity, Rent, Internet..." required/></div>
+      <div class="form-group"><label class="form-label">Category</label><select class="form-select" id="bill-category"><option>Utilities</option><option>Housing</option><option>Internet</option><option>Loan</option><option>Insurance</option><option>Education</option><option>Subscription</option><option>Other</option></select></div>
+      <div class="form-group"><label class="form-label">Amount Due (Rs.)</label><input class="form-input" type="number" min="1" step="0.01" id="bill-amount" required/></div>
+      <div class="form-group"><label class="form-label">Due Date</label><input class="form-input" type="date" id="bill-due-date" required/></div>
+      <div class="form-group"><label class="form-label">Provider / Payee</label><input class="form-input" id="bill-provider" placeholder="CEB, landlord, bank..."/></div>
+      <div class="form-group"><label class="form-label">Recurrence</label><select class="form-select" id="bill-recurrence"><option>One-time</option><option>Weekly</option><option>Monthly</option><option>Quarterly</option><option>Yearly</option><option>Custom</option></select></div>
+      <div class="form-group hidden" id="custom-interval-group"><label class="form-label">Repeat Every (Days)</label><input class="form-input" type="number" min="1" id="bill-custom-days" value="14"/></div>
+      <div class="form-group bill-wide"><label class="form-label">Reminders</label><div class="reminder-options"><label><input type="checkbox" value="0" checked/> Due date</label><label><input type="checkbox" value="1"/> 1 day before</label><label><input type="checkbox" value="3"/> 3 days before</label><label><input type="checkbox" value="7"/> 7 days before</label></div></div>
+      <div class="form-group bill-wide"><label class="form-label">Custom Reminder Dates</label><input class="form-input" id="bill-custom-reminders" placeholder="2026-07-01, 2026-07-05"/><small class="form-help">Separate multiple dates with commas.</small></div>
+      <div class="form-group bill-wide"><label class="form-label">Notes</label><textarea class="form-textarea" id="bill-notes"></textarea></div>
+    </div>
+    <div class="flex flex-gap-md bill-actions"><button type="button" class="btn btn--ghost" data-close="bill-modal">Cancel</button><button class="btn btn--primary" type="submit">Save Bill</button></div>
+  </form>
+</div></div>
+
+<div class="modal-overlay" id="payment-modal"><div class="modal">
+  <div class="modal__header"><h3>Mark Bill as Paid</h3><button class="modal__close" data-close="payment-modal">✕</button></div>
+  <form id="payment-form"><input type="hidden" id="payment-bill-id"/>
+    <div class="payment-summary" id="payment-summary"></div>
+    <div class="form-group"><label class="form-label">Amount Paid</label><input class="form-input" type="number" min="1" step="0.01" id="payment-amount" required/></div>
+    <div class="form-group"><label class="form-label">Payment Date</label><input class="form-input" type="date" id="payment-date" required/></div>
+    <div class="form-group"><label class="form-label">Notes</label><input class="form-input" id="payment-notes" placeholder="Receipt/reference number"/></div>
+    <div class="flex flex-gap-md bill-actions"><button type="button" class="btn btn--ghost" data-close="payment-modal">Cancel</button><button class="btn btn--accent" type="submit">Confirm Payment</button></div>
+  </form>
+</div></div>
+<script src="../assets/js/app.js?v=1.5"></script><script src="../assets/js/bills.js?v=1.0"></script>
+</body></html>

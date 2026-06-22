@@ -5,7 +5,20 @@
 // ── Data Access ────────────────────────────────────────────────
 function getIncome()   { return JSON.parse(localStorage.getItem(STORAGE.INCOME)   || '[]'); }
 function getExpenses() { return JSON.parse(localStorage.getItem(STORAGE.EXPENSES) || '[]'); }
-function getBudgets()  { return JSON.parse(localStorage.getItem(STORAGE.BUDGETS)  || '{}'); }
+function getBudgets()  {
+  const stored = JSON.parse(localStorage.getItem(STORAGE.BUDGETS) || '{}');
+
+  // Upgrade the old flat monthly format without losing local data.
+  if (!stored.daily && !stored.weekly && !stored.monthly) {
+    return { daily: {}, weekly: {}, monthly: stored };
+  }
+
+  return {
+    daily: stored.daily || {},
+    weekly: stored.weekly || {},
+    monthly: stored.monthly || {},
+  };
+}
 
 function saveIncome(data)   { localStorage.setItem(STORAGE.INCOME,   JSON.stringify(data)); }
 function saveExpenses(data) { localStorage.setItem(STORAGE.EXPENSES, JSON.stringify(data)); }
@@ -21,7 +34,7 @@ async function syncTransactions() {
   // Don't let a background sync clobber data from an in-progress write
   if (_mutationsInFlight > 0) return;
   try {
-    const res = await fetch('php/transactions.php?action=fetch_all&_=' + Date.now());
+    const res = await fetch(apiUrl('transactions.php?action=fetch_all&_=') + Date.now());
     const data = await res.json();
     // Double-check: a mutation may have started while we were awaiting the response
     if (data.success && _mutationsInFlight === 0) {
@@ -36,7 +49,7 @@ async function syncTransactions() {
 
 async function syncBudgets() {
   try {
-    const res  = await fetch('php/budgets.php?action=fetch&_=' + Date.now());
+    const res  = await fetch(apiUrl('budgets.php?action=fetch&_=') + Date.now());
     const data = await res.json();
     if (data.success) {
       saveBudgets(data.budgets);
@@ -51,7 +64,7 @@ async function syncBudgets() {
 async function addIncome(entry) {
   _mutationsInFlight++;
   try {
-    const res = await fetch('php/transactions.php?action=add_income', {
+    const res = await fetch(apiUrl('transactions.php?action=add_income'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams(entry)
@@ -78,7 +91,7 @@ async function addIncome(entry) {
 async function deleteIncome(id) {
   _mutationsInFlight++;
   try {
-    const res = await fetch('php/transactions.php?action=delete_income', {
+    const res = await fetch(apiUrl('transactions.php?action=delete_income'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ id })
@@ -100,7 +113,7 @@ async function deleteIncome(id) {
 async function addExpense(entry) {
   _mutationsInFlight++;
   try {
-    const res = await fetch('php/transactions.php?action=add_expense', {
+    const res = await fetch(apiUrl('transactions.php?action=add_expense'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams(entry)
@@ -126,7 +139,7 @@ async function addExpense(entry) {
 async function deleteExpense(id) {
   _mutationsInFlight++;
   try {
-    const res = await fetch('php/transactions.php?action=delete_expense', {
+    const res = await fetch(apiUrl('transactions.php?action=delete_expense'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ id })
@@ -163,6 +176,39 @@ function expensesByCategory(month = true) {
     .filter(e => !month || isThisMonth(e.date))
     .forEach(e => {
       map[e.category] = (map[e.category] || 0) + parseFloat(e.amount);
+    });
+  return map;
+}
+
+function isDateInBudgetPeriod(dateStr, period) {
+  const date = new Date(dateStr + 'T00:00:00');
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  if (period === 'daily') {
+    return date.getTime() === today.getTime();
+  }
+
+  if (period === 'weekly') {
+    const day = today.getDay();
+    const daysSinceMonday = day === 0 ? 6 : day - 1;
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - daysSinceMonday);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+    return date >= weekStart && date <= weekEnd;
+  }
+
+  return date.getMonth() === today.getMonth()
+    && date.getFullYear() === today.getFullYear();
+}
+
+function expensesByCategoryForPeriod(period = 'monthly') {
+  const map = {};
+  getExpenses()
+    .filter(expense => isDateInBudgetPeriod(expense.date, period))
+    .forEach(expense => {
+      map[expense.category] = (map[expense.category] || 0) + parseFloat(expense.amount);
     });
   return map;
 }

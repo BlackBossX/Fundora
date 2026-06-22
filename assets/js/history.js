@@ -33,7 +33,7 @@ function renderHistory() {
 
   tbody.innerHTML = txns.map(t => {
     const isInc = t.type === 'income';
-    const label = isInc ? t.source : `${CAT_EMOJI[t.category]||''} ${t.category}`;
+    const label = isInc ? `${incomeEmoji(t.source)} ${t.source}` : `${CAT_EMOJI[t.category]||''} ${t.category}`;
     const desc  = isInc ? (t.notes||'—') : (t.description||'—');
     const amt   = isInc
       ? `<span class="type-income">+${formatRs(t.amount)}</span>`

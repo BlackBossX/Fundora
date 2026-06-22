@@ -27,7 +27,7 @@ function renderIncomeTable() {
   tbody.innerHTML = income.map(i => `
     <tr>
       <td>${formatDate(i.date)}</td>
-      <td><strong>${i.source}</strong></td>
+      <td><strong>${incomeEmoji(i.source)} ${i.source}</strong></td>
       <td class="text-muted">${i.notes||'—'}</td>
       <td class="text-right type-income">+${formatRs(i.amount)}</td>
       <td>

@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Goals & Savings — Fundora</title>
+    <meta
+      name="description"
+      content="Plan savings goals, track contributions, and monitor financial targets."
+    />
+    <link rel="stylesheet" href="../assets/css/style.css?v=1.5" />
+    <link rel="stylesheet" href="../assets/css/dashboard.css?v=1.6" />
+    <link rel="stylesheet" href="../assets/css/goals.css?v=1.3" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  </head>
+  <body>
+    <div class="layout-with-sidebar">
+      <aside class="sidebar">
+        <a href="../index.html" class="sidebar__logo"
+          ><img src="../assets/icons/Logo trans.png" alt="Fundora" /><span
+            class="sidebar__logo-text"
+            >Fundora</span
+          ></a
+        >
+        <nav class="sidebar__nav">
+          <a href="dashboard.html" class="sidebar__nav-item"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" /></svg
+            >Dashboard</a
+          >
+          <a href="income.html" class="sidebar__nav-item"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"
+              /></svg
+            >Income</a
+          >
+          <a href="expenses.html" class="sidebar__nav-item"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M20 12V22H4V12" />
+              <path d="M22 7H2v5h20V7z" />
+              <path d="M12 22V7" /></svg
+            >Expenses</a
+          >
+          <a href="goals.html" class="sidebar__nav-item active"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <circle cx="12" cy="12" r="5" />
+              <circle cx="12" cy="12" r="1" /></svg
+            >Goals & Savings</a
+          >
+          <a href="history.html" class="sidebar__nav-item"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 8v4l3 3M3 12a9 9 0 1018 0 9 9 0 00-18 0" /></svg
+            >History</a
+          >
+          <a href="settings.html" class="sidebar__nav-item"
+            ><svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83"
+              /></svg
+            >Settings</a
+          >
+        </nav>
+        <div class="sidebar__footer">
+          <div class="sidebar__user">
+            <div class="sidebar__user-avatar" id="sidebar-avatar">U</div>
+            <div>
+              <div class="sidebar__user-name" id="sidebar-name">User</div>
+              <a href="#" id="logout-btn" class="sidebar__user-logout"
+                >Sign out</a
+              >
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <div class="page-header flex-between goals-page-header">
+          <div>
+            <h1 class="page-header__title">Goals & Savings</h1>
+            <p class="page-header__sub">
+              Turn financial targets into clear, trackable plans.
+            </p>
+          </div>
+          <button class="btn btn--primary btn--sm" id="open-goal-modal">
+            + Create Goal
+          </button>
+        </div>
+
+        <div id="goals-alert" class="alert alert--danger hidden mb-lg"></div>
+
+        <div class="stats-grid goals-stats">
+          <div class="stat-card stat-card--balance">
+            <div class="stat-card__label">Active Goals</div>
+            <div class="stat-card__value" id="goals-active-count">0</div>
+            <div class="stat-card__sub">Targets in progress</div>
+          </div>
+          <div class="stat-card stat-card--income">
+            <div class="stat-card__label">Total Saved</div>
+            <div class="stat-card__value" id="goals-total-saved">Rs. 0</div>
+            <div class="stat-card__sub">Across every goal</div>
+          </div>
+          <div class="stat-card stat-card--budget">
+            <div class="stat-card__label">Remaining</div>
+            <div class="stat-card__value" id="goals-total-remaining">Rs. 0</div>
+            <div class="stat-card__sub">Still needed</div>
+          </div>
+          <div class="stat-card stat-card--expense">
+            <div class="stat-card__label">Completed</div>
+            <div class="stat-card__value" id="goals-completed-count">0</div>
+            <div class="stat-card__sub">Goals achieved</div>
+          </div>
+        </div>
+
+        <div class="card card--flat goals-toolbar mb-lg">
+          <div class="form-group mb-0">
+            <label class="form-label" for="goal-search">Search</label>
+            <input
+              class="form-input"
+              id="goal-search"
+              placeholder="Search goals..."
+            />
+          </div>
+          <div class="form-group mb-0">
+            <label class="form-label" for="goal-status-filter">Status</label>
+            <select class="form-select" id="goal-status-filter">
+              <option value="all">All statuses</option>
+              <option>Active</option>
+              <option>Paused</option>
+              <option>Completed</option>
+              <option>Cancelled</option>
+            </select>
+          </div>
+          <div class="form-group mb-0">
+            <label class="form-label" for="goal-priority-filter"
+              >Priority</label
+            >
+            <select class="form-select" id="goal-priority-filter">
+              <option value="all">All priorities</option>
+              <option>High</option>
+              <option>Medium</option>
+              <option>Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="goals-grid" class="goals-grid">
+          <div class="card card--flat goals-empty">
+            <h3>No savings goals yet</h3>
+            <p>Create your first goal and start building momentum.</p>
+          </div>
+        </div>
+
+        <section id="goal-detail" class="goal-detail hidden">
+          <div class="flex-between mb-lg goal-detail-heading">
+            <div>
+              <span class="badge badge--primary">Goal analysis</span>
+              <h2 id="detail-goal-name">Goal</h2>
+            </div>
+            <button class="btn btn--ghost btn--sm" id="close-goal-detail">
+              Close
+            </button>
+          </div>
+          <div class="goal-analysis-grid mb-lg">
+            <div class="card card--flat goal-metric">
+              <span>Days remaining</span><strong id="detail-days">—</strong>
+            </div>
+            <div class="card card--flat goal-metric">
+              <span>Needed per month</span
+              ><strong id="detail-monthly-needed">—</strong>
+            </div>
+            <div class="card card--flat goal-metric">
+              <span>Needed per week</span
+              ><strong id="detail-weekly-needed">—</strong>
+            </div>
+            <div class="card card--flat goal-metric">
+              <span>Estimated completion</span
+              ><strong id="detail-estimated-date">—</strong>
+            </div>
+          </div>
+          <div class="goal-detail-grid">
+            <div class="card card--flat">
+              <h3 class="card-title mb-md">Savings progress</h3>
+              <div class="goal-chart">
+                <canvas id="goal-progress-chart"></canvas>
+              </div>
+            </div>
+            <div class="card card--flat">
+              <div class="flex-between mb-md">
+                <h3 class="card-title">Contribution history</h3>
+                <button
+                  class="btn btn--accent btn--sm"
+                  id="detail-add-contribution"
+                >
+                  + Add money
+                </button>
+              </div>
+              <div class="table-wrapper">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Type</th>
+                      <th>Notes</th>
+                      <th class="text-right">Amount</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="contribution-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-overlay" id="goal-modal">
+      <div class="modal modal--wide">
+        <div class="modal__header">
+          <h3 id="goal-modal-title">Create Savings Goal</h3>
+          <button class="modal__close" data-close="goal-modal">✕</button>
+        </div>
+        <form id="goal-form">
+          <input type="hidden" id="goal-id" />
+          <div class="goal-form-grid">
+            <div class="form-group goal-form-wide">
+              <label class="form-label" for="goal-name">Goal name</label
+              ><input
+                class="form-input"
+                id="goal-name"
+                placeholder="e.g. Buy a New Laptop"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="goal-category">Category</label
+              ><select class="form-select" id="goal-category">
+                <option>Emergency</option>
+                <option>Education</option>
+                <option>Travel</option>
+                <option>Technology</option>
+                <option>Vehicle</option>
+                <option>Home</option>
+                <option>Investment</option>
+                <option selected>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="goal-priority">Priority</label
+              ><select class="form-select" id="goal-priority">
+                <option>High</option>
+                <option selected>Medium</option>
+                <option>Low</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="goal-target-amount"
+                >Target amount (Rs.)</label
+              ><input
+                class="form-input"
+                type="number"
+                min="1"
+                step="0.01"
+                id="goal-target-amount"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="goal-target-date"
+                >Target date</label
+              ><input
+                class="form-input"
+                type="date"
+                id="goal-target-date"
+                required
+              />
+            </div>
+            <div class="form-group" id="initial-saved-group">
+              <label class="form-label" for="goal-initial-saved"
+                >Already saved (Rs.)</label
+              ><input
+                class="form-input"
+                type="number"
+                min="0"
+                step="0.01"
+                id="goal-initial-saved"
+                value="0"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="goal-status">Status</label
+              ><select class="form-select" id="goal-status">
+                <option>Active</option>
+                <option>Paused</option>
+                <option>Completed</option>
+                <option>Cancelled</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="goal-auto-amount"
+                >Automatic monthly amount</label
+              ><input
+                class="form-input"
+                type="number"
+                min="0"
+                step="0.01"
+                id="goal-auto-amount"
+                value="0"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="goal-auto-day"
+                >Monthly contribution day</label
+              ><input
+                class="form-input"
+                type="number"
+                min="1"
+                max="28"
+                id="goal-auto-day"
+                value="1"
+              />
+            </div>
+            <div class="form-group goal-form-wide">
+              <label class="form-label" for="goal-description"
+                >Description / notes</label
+              ><textarea
+                class="form-textarea"
+                id="goal-description"
+                placeholder="Why this goal matters, plans, reminders..."
+              ></textarea>
+            </div>
+          </div>
+          <div class="flex flex-gap-md goal-form-actions">
+            <button
+              type="button"
+              class="btn btn--ghost"
+              data-close="goal-modal"
+            >
+              Cancel</button
+            ><button type="submit" class="btn btn--primary">Save Goal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="contribution-modal">
+      <div class="modal">
+        <div class="modal__header">
+          <h3 id="contribution-modal-title">Add Contribution</h3>
+          <button class="modal__close" data-close="contribution-modal">
+            ✕
+          </button>
+        </div>
+        <form id="contribution-form">
+          <input type="hidden" id="contribution-id" /><input
+            type="hidden"
+            id="contribution-goal-id"
+          />
+          <div class="form-group">
+            <label class="form-label" for="contribution-type">Transaction</label
+            ><select class="form-select" id="contribution-type">
+              <option value="Deposit">Add Contribution</option>
+              <option value="Withdrawal">Withdraw</option>
+            </select>
+          </div>
+          <div class="net-amount-panel" id="net-amount-panel">
+            <span>Current amount in hand</span>
+            <strong id="available-net-amount">Rs. 0.00</strong>
+            <button
+              type="button"
+              class="net-source-toggle"
+              id="net-source-toggle"
+              aria-pressed="false"
+            >
+              <span class="net-source-toggle__check">✓</span>
+              Use current amount in hand
+            </button>
+            <small id="net-amount-help"
+              >Optional: deduct this contribution from your current amount in
+              hand.</small
+            >
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contribution-amount"
+              >Amount (Rs.)</label
+            ><input
+              class="form-input"
+              type="number"
+              min="1"
+              step="0.01"
+              id="contribution-amount"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contribution-date">Date</label
+            ><input
+              class="form-input"
+              type="date"
+              id="contribution-date"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contribution-notes">Notes</label
+            ><input
+              class="form-input"
+              id="contribution-notes"
+              placeholder="Optional note"
+            />
+          </div>
+          <div class="flex flex-gap-md goal-form-actions">
+            <button
+              type="button"
+              class="btn btn--ghost"
+              data-close="contribution-modal"
+            >
+              Cancel</button
+            ><button type="submit" class="btn btn--accent">
+              Save Contribution
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="../assets/js/app.js?v=1.5"></script>
+    <script src="../assets/js/goals.js?v=1.2"></script>
+  </body>
+</html>

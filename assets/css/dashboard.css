@@ -1,0 +1,189 @@
+/* =========================================================
+   Fundora — Dashboard Styles
+   ========================================================= */
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Charts */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+.chart-container {
+  position: relative;
+  height: 260px;
+}
+
+.dashboard-chart-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+/* Budget Progress */
+.budget-item {
+  margin-bottom: var(--space-md);
+}
+
+.budget-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+}
+
+.budget-item__category { font-weight: 600; }
+.budget-item__amounts  { color: var(--color-text-muted); }
+
+.budget-period-group + .budget-period-group {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+.budget-period-title {
+  margin-bottom: var(--space-md);
+  color: var(--color-primary-light);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.dashboard-section-sub {
+  font-size: 0.82rem;
+  margin-top: 4px;
+}
+
+.dashboard-goals {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.dashboard-goal {
+  display: block;
+  padding: var(--space-md);
+  background: var(--color-bg-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+}
+
+.dashboard-goal:hover {
+  color: var(--color-text);
+  border-color: rgba(0,212,170,0.4);
+  transform: translateY(-2px);
+}
+
+.dashboard-goal__header,
+.dashboard-goal__meta,
+.dashboard-goal__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dashboard-bills { display:flex; flex-direction:column; gap:9px; }
+.dashboard-bill { display:flex; justify-content:space-between; gap:14px; align-items:center; padding:13px 15px; background:var(--color-bg-3); border:1px solid var(--color-border); border-radius:var(--radius-md); color:var(--color-text); }
+.dashboard-bill:hover { color:var(--color-text); border-color:rgba(245,158,11,.45); }
+.dashboard-bill div:first-child span,.dashboard-bill__amount span { display:block; color:var(--color-text-muted); font-size:.75rem; margin-top:3px; }
+.dashboard-bill__amount { text-align:right; font-weight:700; white-space:nowrap; }
+.dashboard-bill-summary { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:12px 15px; color:var(--color-text-muted); font-size:.8rem; }
+.dashboard-bill-summary strong { color:var(--color-warning); }
+
+.dashboard-goal__meta {
+  align-items: center;
+  margin: 9px 0 4px;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.dashboard-goal__meta .badge {
+  font-size: 0.62rem;
+  padding: 2px 7px;
+}
+
+.dashboard-goal__header span {
+  color: var(--color-accent);
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.dashboard-goal__footer {
+  margin-top: 9px;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+/* Sidebar user */
+.sidebar__user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar__user-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.sidebar__user-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.sidebar__user-logout {
+  font-size: 0.78rem;
+  color: var(--color-text-dim);
+}
+
+.sidebar__user-logout:hover {
+  color: var(--color-danger);
+}
+
+/* Transaction type badge */
+.type-income  { color: var(--color-success); font-weight: 600; }
+.type-expense { color: var(--color-danger);  font-weight: 600; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .charts-grid { grid-template-columns: 1fr; }
+  .dashboard-goals { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 520px) {
+  .chart-container { height: 225px; }
+  .dashboard-goal__header,
+  .dashboard-goal__footer,
+  .dashboard-goal__meta,
+  .dashboard-bill {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .dashboard-bill__amount { text-align: left; }
+  .dashboard-bill-summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .budget-item__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .dashboard-chart-section__header { align-items: flex-start; }
+}
