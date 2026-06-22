@@ -9,7 +9,7 @@ const BUDGET_PERIODS = ['daily','weekly','monthly'];
 
 async function fetchBudgetsFromDB() {
   try {
-    const res  = await fetch('php/budgets.php?action=fetch&_=' + Date.now());
+    const res  = await fetch(apiUrl('budgets.php?action=fetch&_=') + Date.now());
     const data = await res.json();
     if (data.success) {
       saveBudgets(data.budgets);   // update localStorage with DB truth
@@ -21,7 +21,7 @@ async function fetchBudgetsFromDB() {
 
 async function saveBudgetsToDB(budgets) {
   try {
-    const res  = await fetch('php/budgets.php?action=save', {
+    const res  = await fetch(apiUrl('budgets.php?action=save'), {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ budgets })

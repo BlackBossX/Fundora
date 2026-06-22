@@ -16,7 +16,7 @@ async function goalsRequest(action, data = null) {
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify(data)
   } : {};
-  const response = await fetch(`php/goals.php?action=${action}&_=${Date.now()}`, options);
+  const response = await fetch(apiUrl(`goals.php?action=${action}&_=${Date.now()}`), options);
   const payload = await response.json();
   if (!payload.success) throw new Error(payload.message || 'Request failed');
   return payload;

@@ -3,6 +3,15 @@
  * Shared across all pages: session, formatting, sidebar setup
  */
 
+// ── Path Helpers (root vs app/ pages) ─────────────────────────
+const IS_APP = location.pathname.includes('/app/');
+const ROOT = IS_APP ? '../' : '';
+const APP = IS_APP ? '' : 'app/';
+
+function apiUrl(file) {
+  return `${ROOT}php/${file}`;
+}
+
 // ── Storage Keys ──────────────────────────────────────────────
 const STORAGE = {
   USER:     'fundora_user',
@@ -18,17 +27,13 @@ function getUser() {
 }
 
 function requireAuth() {
-  // Pages that need login; redirect to login if no session
-  const publicPages = ['index.html', 'login.html', 'register.html', ''];
-  const page = location.pathname.split('/').pop();
-  if (!publicPages.includes(page) && !getUser()) {
-    location.href = 'login.html';
-  }
+  if (!IS_APP) return;
+  if (!getUser()) location.href = ROOT + 'login.html';
 }
 
 function logout() {
   localStorage.removeItem(STORAGE.USER);
-  location.href = 'login.html';
+  location.href = ROOT + 'login.html';
 }
 
 // ── Format Currency ────────────────────────────────────────────

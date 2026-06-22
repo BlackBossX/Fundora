@@ -1,6 +1,6 @@
 let bills=[],payments=[],billSummary={};
 const BILL_ICONS={Utilities:'⚡',Housing:'🏠',Internet:'🌐',Loan:'🏦',Insurance:'🛡️',Education:'🎓',Subscription:'🔁',Other:'🧾'};
-async function billRequest(action,data=null){const options=data?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}:{};const res=await fetch(`php/bills.php?action=${action}&_=${Date.now()}`,options);const json=await res.json();if(!json.success)throw new Error(json.message||'Request failed');return json}
+async function billRequest(action,data=null){const options=data?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}:{};const res=await fetch(apiUrl(`bills.php?action=${action}&_=${Date.now()}`),options);const json=await res.json();if(!json.success)throw new Error(json.message||'Request failed');return json}
 function safe(v=''){const d=document.createElement('div');d.textContent=v;return d.innerHTML}
 function daysUntil(date){const a=new Date();a.setHours(0,0,0,0);return Math.ceil((new Date(date+'T00:00:00')-a)/86400000)}
 function billState(b){if(b.status==='Paid')return'paid';return daysUntil(b.due_date)<0?'overdue':'upcoming'}

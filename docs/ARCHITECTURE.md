@@ -38,28 +38,32 @@ Fundora follows a classic **3-Tier Web Architecture**:
 | Page | Purpose |
 |---|---|
 | `index.html` | Public landing page — hero, features, CTA |
-| `dashboard.html` | Authenticated home — charts, summaries, alerts |
-| `income.html` | Add/manage income entries |
-| `expenses.html` | Add/manage expense entries |
-| `history.html` | View/filter all transactions |
-| `settings.html` | Set budget limits, update profile |
+| `login.html` | User login |
+| `register.html` | User registration |
+| `app/dashboard.html` | Authenticated home — charts, summaries, alerts |
+| `app/income.html` | Add/manage income entries |
+| `app/expenses.html` | Add/manage expense entries |
+| `app/history.html` | View/filter all transactions |
+| `app/settings.html` | Set budget limits, update profile |
+| `app/goals.html` | Savings goals and contributions |
+| `app/bills.html` | Bill reminders and payments |
 
 ### JavaScript Modules
 
 | File | Responsibility |
 |---|---|
-| `js/app.js` | Session checks, navigation, shared utilities |
-| `js/charts.js` | Chart.js pie/bar chart rendering |
-| `js/transactions.js` | CRUD calls to PHP API via `fetch()` |
-| `js/alerts.js` | Compare spending vs. budgets, show warnings |
+| `assets/js/app.js` | Session checks, navigation, shared utilities |
+| `assets/js/charts.js` | Chart.js pie/bar chart rendering |
+| `assets/js/transactions.js` | CRUD calls to PHP API via `fetch()` |
+| `assets/js/alerts.js` | Compare spending vs. budgets, show warnings |
 
 ### CSS Architecture
 
 | File | Scope |
 |---|---|
-| `css/style.css` | Design tokens, reset, typography, layout |
-| `css/components.css` | Cards, buttons, forms, badges, modals |
-| `css/dashboard.css` | Dashboard-specific grid and chart styles |
+| `assets/css/style.css` | Design tokens, reset, typography, layout |
+| `assets/css/dashboard.css` | App shell, grid, and chart styles |
+| `assets/css/*.css` | Page-specific styles (landing, auth, settings, goals, bills) |
 
 ---
 
@@ -71,7 +75,7 @@ All PHP files follow a simple **REST-like pattern**: they accept `GET` or `POST`
 
 ```
 /php/
-├── config.php          — DB connection (PDO)
+├── db.php              — DB connection (PDO)
 ├── auth.php            — POST /login, POST /register, GET /logout
 ├── transactions.php    — GET/POST/DELETE for income & expenses
 └── budgets.php         — GET/POST budget limits
@@ -91,7 +95,7 @@ All PHP files follow a simple **REST-like pattern**: they accept `GET` or `POST`
 User fills expense form
       │
       ▼
-js/transactions.js sends POST fetch()
+assets/js/transactions.js sends POST fetch()
       │
       ▼
 php/transactions.php validates input
@@ -102,8 +106,8 @@ php/transactions.php validates input
             │
             ▼
       js updates the UI table
-      js/alerts.js rechecks budget limits
-      js/charts.js refreshes charts
+      assets/js/alerts.js rechecks budget limits
+      assets/js/charts.js refreshes charts
 ```
 
 ---
@@ -125,7 +129,7 @@ php/transactions.php validates input
 For this academic project, everything runs on a single XAMPP instance. In a production setting, consider:
 
 - Separating the PHP API into a dedicated REST API (Laravel or Slim)
-- Using environment variables (`.env`) instead of hardcoded `config.php`
+- Using environment variables (`.env`) instead of hardcoded `db.php`
 - Hosting on AWS (EC2 + RDS) or DigitalOcean
 - Adding HTTPS via Let's Encrypt
 - Caching with Redis for repeated chart queries
