@@ -2,17 +2,23 @@
  * dashboard.js — Dashboard page logic
  */
 
-function renderDashboard() {
-  // Stats
-  const inc  = totalIncome(true);
-  const exp  = totalExpenses(true);
-  const bal  = inc - exp;
+function setDashboardBalance(monthGoalCashMovement = 0) {
+  const bal = totalIncome(true) - totalExpenses(true) - monthGoalCashMovement;
+  const balanceEl = document.getElementById('stat-balance');
+  if (!balanceEl) return;
+  balanceEl.textContent = formatRs(bal);
+  balanceEl.style.color = bal >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+}
+
+async function renderDashboard() {
+  const inc = totalIncome(true);
+  const exp = totalExpenses(true);
 
   document.getElementById('stat-income').textContent  = formatRs(inc);
   document.getElementById('stat-expense').textContent = formatRs(exp);
-  document.getElementById('stat-balance').textContent = formatRs(bal);
-  document.getElementById('stat-balance').style.color =
-    bal >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+
+  // Fetch goal cash movement before showing balance (income/expense only until then)
+  await renderDashboardGoals();
 
   // Alerts count
   const alertCount = checkBudgetAlerts('#alerts-container');
@@ -20,9 +26,6 @@ function renderDashboard() {
 
   // Budget Progress
   renderBudgetProgress();
-
-  // Savings goals
-  renderDashboardGoals();
 
   // Bill reminders
   renderDashboardBills();
@@ -39,7 +42,7 @@ async function renderDashboardBills() {
   const alertsBox = document.getElementById('dashboard-bill-alerts');
   if (!container) return;
   try {
-    const response = await fetch('php/bills.php?action=fetch_all&_=' + Date.now());
+    const response = await fetch(apiUrl('bills.php?action=fetch_all&_=') + Date.now());
     const data = await response.json();
     if (!data.success) throw new Error(data.message || 'Unable to load bills');
     const active = data.bills.filter(bill => bill.status === 'Active').slice(0, 3);
@@ -70,15 +73,12 @@ async function renderDashboardGoals() {
   if (!container) return;
 
   try {
-    const response = await fetch('php/goals.php?action=fetch_all&_=' + Date.now());
+    const response = await fetch(apiUrl('goals.php?action=fetch_all&_=') + Date.now());
     const data = await response.json();
     if (!data.success) throw new Error(data.message || 'Unable to load goals');
 
     const monthGoalCashMovement = Number(data.current_month_goal_cash_movement || 0);
-    const availableBalance = totalIncome(true) - totalExpenses(true) - monthGoalCashMovement;
-    const balanceEl = document.getElementById('stat-balance');
-    balanceEl.textContent = formatRs(availableBalance);
-    balanceEl.style.color = availableBalance >= 0 ? 'var(--color-success)' : 'var(--color-danger)';
+    setDashboardBalance(monthGoalCashMovement);
 
     const goals = data.goals
       .filter(goal => goal.status === 'Active')
@@ -102,6 +102,7 @@ async function renderDashboardGoals() {
       </a>`;
     }).join('');
   } catch (error) {
+    setDashboardBalance(0);
     container.innerHTML = `<p class="text-muted">Goals are unavailable until the database migration is installed.</p>`;
   }
 }

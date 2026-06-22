@@ -43,20 +43,20 @@ sudo cp -r /path/to/Fundora /opt/lampp/htdocs/fundora
 2. Click **New** in the left sidebar
 3. Name the database: `fundora_db`
 4. Click **Create**
-5. Click **Import** tab → choose `database/database.sql` → click **Go**
+5. Click **Import** tab → choose `database/schema/database.sql` → click **Go**
 
 If you already installed an older Fundora database, import
-`database/migrate_budget_periods.sql` once instead. Existing limits will be
+`database/migrations/migrate_budget_periods.sql` once instead. Existing limits will be
 kept as monthly limits.
 
 To add Goals & Savings to an existing installation, also import
-`database/migrate_goals_savings.sql` once.
+`database/migrations/migrate_goals_savings.sql` once.
 
 For the “Add from Net Amount” transfer option, import
-`database/migrate_net_goal_contributions.sql` once as well.
+`database/migrations/migrate_net_goal_contributions.sql` once as well.
 
 To add Bill Payment Reminders, import
-`database/migrate_bill_reminders.sql` once.
+`database/migrations/migrate_bill_reminders.sql` once.
 
 ---
 
@@ -106,11 +106,11 @@ After importing the database, you can log in with:
 
 ### Database connection error
 - Ensure MySQL is running in XAMPP
-- Double-check credentials in `php/config.php`
+- Double-check credentials in `php/db.php`
 - Verify the `fundora_db` database exists in phpMyAdmin
 
 ### Blank page or PHP errors
-- Enable error display: add `ini_set('display_errors', 1);` at the top of `php/config.php`
+- Enable error display: add `ini_set('display_errors', 1);` at the top of `php/db.php`
 - Check the Apache error log at `/opt/lampp/logs/error_log`
 
 ---

@@ -25,7 +25,7 @@ if (loginForm) {
     }
 
     try {
-      const response = await fetch('php/auth.php?action=login', {
+      const response = await fetch(apiUrl('auth.php?action=login'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({ email, password })
@@ -34,7 +34,7 @@ if (loginForm) {
 
       if (data.success) {
         localStorage.setItem(STORAGE.USER, JSON.stringify(data.user));
-        location.href = 'dashboard.html';
+        location.href = APP + 'dashboard.html';
       } else {
         showAlert(data.message || 'Invalid email or password.');
       }
@@ -69,7 +69,7 @@ if (registerForm) {
     }
 
     try {
-      const response = await fetch('php/auth.php?action=register', {
+      const response = await fetch(apiUrl('auth.php?action=register'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({ name, email, password })
