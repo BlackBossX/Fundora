@@ -1,6 +1,6 @@
 <?php
 // php/auth.php
-require 'db.php';
+require __DIR__ . '/db.php';
 header('Content-Type: application/json');
 
 $action = $_GET['action'] ?? '';
