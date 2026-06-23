@@ -43,6 +43,17 @@ CREATE TABLE IF NOT EXISTS budgets (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+
+-- Existing budget rows remain monthly after this migration.
+ALTER TABLE budgets
+    ADD COLUMN period ENUM('daily', 'weekly', 'monthly')
+    NOT NULL DEFAULT 'monthly' AFTER category;
+
+ALTER TABLE budgets
+    DROP INDEX unique_user_category,
+    ADD UNIQUE KEY unique_user_category_period (user_id, category, period);
+
+
 CREATE TABLE IF NOT EXISTS savings_goals (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,

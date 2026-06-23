@@ -6,7 +6,7 @@
   <title>Login — Fundora</title>
   <meta name="description" content="Log in to your Fundora account to manage your student finances."/>
   <link rel="stylesheet" href="assets/css/style.css?v=1.5"/>
-  <link rel="stylesheet" href="assets/css/auth.css?v=1.2"/>
+  <link rel="stylesheet" href="assets/css/auth.css?v=1.3"/>
 </head>
 <body>
 <div class="auth-page">
@@ -23,17 +23,31 @@
     <h1 class="auth-card__title">Welcome back</h1>
     <p class="auth-card__sub">Sign in to your account</p>
 
-    <div id="auth-alert" class="alert alert--danger hidden" style="margin-bottom:16px;"></div>
+    <div id="auth-alert" class="alert alert--danger hidden" style="margin-bottom:16px;" role="alert"></div>
 
-    <form id="login-form" novalidate>
-      <div class="form-group">
+    <form id="login-form" novalidate autocomplete="on">
+      <!-- Email -->
+      <div class="form-group" id="grp-login-email">
         <label class="form-label" for="login-email">Email</label>
-        <input class="form-input" type="email" id="login-email" name="email" placeholder="you@example.com" required/>
+        <input class="form-input" type="email" id="login-email" name="email"
+               placeholder="you@example.com" autocomplete="email" required/>
+        <span class="field-error" id="err-login-email" aria-live="polite"></span>
       </div>
-      <div class="form-group">
+
+      <!-- Password -->
+      <div class="form-group" id="grp-login-password">
         <label class="form-label" for="login-password">Password</label>
-        <input class="form-input" type="password" id="login-password" name="password" placeholder="••••••••" required/>
+        <div class="input-wrap">
+          <input class="form-input" type="password" id="login-password" name="password"
+                 placeholder="••••••••" autocomplete="current-password" required/>
+          <button type="button" class="toggle-pw" id="toggle-login-pw" aria-label="Show password" tabindex="-1">
+            <svg id="eye-login-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg id="eye-login-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          </button>
+        </div>
+        <span class="field-error" id="err-login-password" aria-live="polite"></span>
       </div>
+
       <button class="btn btn--primary w-full" id="login-btn" type="submit">Sign In</button>
     </form>
 
@@ -43,6 +57,6 @@
   </div>
 </div>
 <script src="assets/js/app.js?v=1.2"></script>
-<script src="assets/js/auth.js?v=1.2"></script>
+<script src="assets/js/auth.js?v=1.3"></script>
 </body>
 </html>
