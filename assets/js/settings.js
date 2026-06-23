@@ -9,27 +9,46 @@ const BUDGET_PERIODS = ['daily','weekly','monthly'];
 
 async function fetchBudgetsFromDB() {
   try {
-    const res  = await fetch(apiUrl('budgets.php?action=fetch&_=') + Date.now());
-    const data = await res.json();
-    if (data.success) {
-      saveBudgets(data.budgets);   // update localStorage with DB truth
+    const res = await fetch(apiUrl('budgets.php?action=fetch&_=') + Date.now());
+    if (!res.ok) {
+      console.warn('fetchBudgets: server returned', res.status, '— using localStorage only');
+      return;
     }
+    const text = await res.text();
+    if (!text || text.trim().startsWith('<')) {
+      // InfinityFree returned HTML (security page) — skip silently
+      console.warn('fetchBudgets: got HTML instead of JSON — using localStorage only');
+      return;
+    }
+    const data = JSON.parse(text);
+    if (data.success) saveBudgets(data.budgets);
   } catch (e) {
-    console.error('Failed to fetch budgets', e);
+    console.warn('fetchBudgets failed, using localStorage only:', e.message);
   }
 }
 
 async function saveBudgetsToDB(budgets) {
   try {
-    const res  = await fetch(apiUrl('budgets.php?action=save'), {
+    // Send as form-urlencoded so InfinityFree WAF doesn't block the request.
+    // budgets.php reads $_POST['budgets'] and JSON-decodes it server-side.
+    const res = await fetch(apiUrl('budgets.php?action=save'), {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ budgets })
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body:    new URLSearchParams({ budgets: JSON.stringify(budgets) })
     });
-    const data = await res.json();
+    if (!res.ok) {
+      console.warn('saveBudgets: server returned', res.status, '— saved to localStorage only');
+      return false;
+    }
+    const text = await res.text();
+    if (!text || text.trim().startsWith('<')) {
+      console.warn('saveBudgets: got HTML instead of JSON — saved to localStorage only');
+      return false;
+    }
+    const data = JSON.parse(text);
     return data.success;
   } catch (e) {
-    console.error('Failed to save budgets', e);
+    console.warn('saveBudgets failed, saved to localStorage only:', e.message);
     return false;
   }
 }

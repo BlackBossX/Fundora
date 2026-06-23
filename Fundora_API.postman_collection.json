@@ -1,0 +1,445 @@
+{
+  "info": {
+    "name": "Fundora API",
+    "_postman_id": "fundora-api-collection",
+    "description": "Complete API test collection for Fundora Student Finance Tracker.\n\nSet the 'base_url' variable to your server (e.g. http://localhost or https://your-site.infinityfree.net).\n\nIMPORTANT: Run 'Login' first — PHP session cookie is stored automatically by Postman.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost",
+      "description": "Change this to your server URL (no trailing slash)"
+    },
+    {
+      "key": "income_id",
+      "value": "1",
+      "description": "ID of an income record to delete/test"
+    },
+    {
+      "key": "expense_id",
+      "value": "1",
+      "description": "ID of an expense record to delete/test"
+    },
+    {
+      "key": "goal_id",
+      "value": "1",
+      "description": "ID of a savings goal"
+    },
+    {
+      "key": "contribution_id",
+      "value": "1",
+      "description": "ID of a goal contribution"
+    },
+    {
+      "key": "bill_id",
+      "value": "1",
+      "description": "ID of a bill"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "url": { "raw": "{{base_url}}/php/auth.php?action=register", "host": ["{{base_url}}"], "path": ["php", "auth.php"], "query": [{ "key": "action", "value": "register" }] },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "name",     "value": "Test User" },
+                { "key": "email",    "value": "testuser@example.com" },
+                { "key": "password", "value": "password123" }
+              ]
+            },
+            "description": "Create a new user account. Password is hashed with bcrypt on the server."
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "url": { "raw": "{{base_url}}/php/auth.php?action=login", "host": ["{{base_url}}"], "path": ["php", "auth.php"], "query": [{ "key": "action", "value": "login" }] },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "email",    "value": "testuser@example.com" },
+                { "key": "password", "value": "password123" }
+              ]
+            },
+            "description": "Login and establish a PHP session. Postman stores the session cookie automatically. All subsequent requests use this session."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/php/auth.php?action=logout", "host": ["{{base_url}}"], "path": ["php", "auth.php"], "query": [{ "key": "action", "value": "logout" }] },
+            "description": "Destroys the PHP session. User is logged out."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Fetch All (Income + Expenses)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/php/transactions.php?action=fetch_all", "host": ["{{base_url}}"], "path": ["php", "transactions.php"], "query": [{ "key": "action", "value": "fetch_all" }] },
+            "description": "Returns all income[] and expenses[] arrays for the logged-in user."
+          }
+        },
+        {
+          "name": "Add Income",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "url": { "raw": "{{base_url}}/php/transactions.php?action=add_income", "host": ["{{base_url}}"], "path": ["php", "transactions.php"], "query": [{ "key": "action", "value": "add_income" }] },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "source", "value": "Scholarship" },
+                { "key": "amount", "value": "25000" },
+                { "key": "date",   "value": "2025-06-23" },
+                { "key": "notes",  "value": "Monthly scholarship payment" }
+              ]
+            },
+            "description": "Inserts a new income record. Returns {success: true, id: <new_id>}."
+          }
+        },
+        {
+          "name": "Add Expense",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "url": { "raw": "{{base_url}}/php/transactions.php?action=add_expense", "host": ["{{base_url}}"], "path": ["php", "transactions.php"], "query": [{ "key": "action", "value": "add_expense" }] },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "category",    "value": "Food" },
+                { "key": "amount",      "value": "850" },
+                { "key": "description", "value": "Lunch at canteen" },
+                { "key": "date",        "value": "2025-06-23" }
+              ]
+            },
+            "description": "Category must be one of: Food, Transport, Rent, Entertainment, Health, Education, Other"
+          }
+        },
+        {
+          "name": "Delete Income",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "url": { "raw": "{{base_url}}/php/transactions.php?action=delete_income", "host": ["{{base_url}}"], "path": ["php", "transactions.php"], "query": [{ "key": "action", "value": "delete_income" }] },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "id", "value": "{{income_id}}" }
+              ]
+            },
+            "description": "Deletes income by ID. Server checks ownership (AND user_id = ?) before deleting."
+          }
+        },
+        {
+          "name": "Delete Expense",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "url": { "raw": "{{base_url}}/php/transactions.php?action=delete_expense", "host": ["{{base_url}}"], "path": ["php", "transactions.php"], "query": [{ "key": "action", "value": "delete_expense" }] },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "id", "value": "{{expense_id}}" }
+              ]
+            },
+            "description": "Deletes expense by ID. Ownership is verified server-side."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Budgets",
+      "item": [
+        {
+          "name": "Fetch Budgets",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/php/budgets.php?action=fetch", "host": ["{{base_url}}"], "path": ["php", "budgets.php"], "query": [{ "key": "action", "value": "fetch" }] },
+            "description": "Returns {budgets: {daily:{...}, weekly:{...}, monthly:{...}}} for the logged-in user."
+          }
+        },
+        {
+          "name": "Save Budgets",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/php/budgets.php?action=save", "host": ["{{base_url}}"], "path": ["php", "budgets.php"], "query": [{ "key": "action", "value": "save" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"budgets\": {\n    \"daily\": {\n      \"Food\": 500,\n      \"Transport\": 200\n    },\n    \"weekly\": {\n      \"Entertainment\": 1500,\n      \"Food\": 3000\n    },\n    \"monthly\": {\n      \"Rent\": 15000,\n      \"Food\": 12000,\n      \"Transport\": 5000,\n      \"Entertainment\": 4000,\n      \"Health\": 2000,\n      \"Education\": 3000,\n      \"Other\": 1000\n    }\n  }\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Atomically replaces ALL budgets for the user. Uses DB transaction: DELETE all, then re-INSERT. Only valid categories and periods are accepted."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Savings Goals",
+      "item": [
+        {
+          "name": "Fetch All Goals",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/php/goals.php?action=fetch_all", "host": ["{{base_url}}"], "path": ["php", "goals.php"], "query": [{ "key": "action", "value": "fetch_all" }] },
+            "description": "Returns goals[], contributions[], available_net_amount, current_month_goal_cash_movement. Also triggers automatic contributions for due goals."
+          }
+        },
+        {
+          "name": "Create Goal",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/php/goals.php?action=create_goal", "host": ["{{base_url}}"], "path": ["php", "goals.php"], "query": [{ "key": "action", "value": "create_goal" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Emergency Fund\",\n  \"category\": \"Emergency\",\n  \"target_amount\": 50000,\n  \"target_date\": \"2025-12-31\",\n  \"priority\": \"High\",\n  \"description\": \"3 months of expenses as emergency buffer\",\n  \"status\": \"Active\",\n  \"auto_contribution_amount\": 2000,\n  \"auto_contribution_day\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Category: Emergency, Education, Travel, Technology, Vehicle, Home, Investment, Other\nPriority: High, Medium, Low\nStatus: Active, Completed, Paused, Cancelled\nauto_contribution_day: 1-28 (day of month)"
+          }
+        },
+        {
+          "name": "Update Goal",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/php/goals.php?action=update_goal", "host": ["{{base_url}}"], "path": ["php", "goals.php"], "query": [{ "key": "action", "value": "update_goal" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{goal_id}},\n  \"name\": \"Emergency Fund (Updated)\",\n  \"category\": \"Emergency\",\n  \"target_amount\": 60000,\n  \"target_date\": \"2026-03-31\",\n  \"priority\": \"High\",\n  \"description\": \"Updated target\",\n  \"status\": \"Active\",\n  \"auto_contribution_amount\": 3000,\n  \"auto_contribution_day\": 5\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Delete Goal",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/php/goals.php?action=delete_goal", "host": ["{{base_url}}"], "path": ["php", "goals.php"], "query": [{ "key": "action", "value": "delete_goal" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{goal_id}}\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Deletes the goal and all its contributions (CASCADE)."
+          }
+        },
+        {
+          "name": "Add Contribution (Deposit)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/php/goals.php?action=add_contribution", "host": ["{{base_url}}"], "path": ["php", "goals.php"], "query": [{ "key": "action", "value": "add_contribution" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"goal_id\": {{goal_id}},\n  \"type\": \"Deposit\",\n  \"amount\": 5000,\n  \"contribution_date\": \"2025-06-23\",\n  \"notes\": \"Monthly savings deposit\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Type options:\n- Deposit: Adds to goal balance only (no net amount impact)\n- NetTransfer: Deducts from available net amount (income - expenses - transfers)\n- Withdrawal: Removes from goal balance"
+          }
+        },
+        {
+          "name": "Add Contribution (NetTransfer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/php/goals.php?action=add_contribution", "host": ["{{base_url}}"], "path": ["php", "goals.php"], "query": [{ "key": "action", "value": "add_contribution" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"goal_id\": {{goal_id}},\n  \"type\": \"NetTransfer\",\n  \"amount\": 3000,\n  \"contribution_date\": \"2025-06-23\",\n  \"notes\": \"Transfer from hand\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "NetTransfer deducts from available_net_amount. Server validates amount <= available net."
+          }
+        },
+        {
+          "name": "Add Contribution (Withdrawal)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/php/goals.php?action=add_contribution", "host": ["{{base_url}}"], "path": ["php", "goals.php"], "query": [{ "key": "action", "value": "add_contribution" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"goal_id\": {{goal_id}},\n  \"type\": \"Withdrawal\",\n  \"amount\": 1000,\n  \"contribution_date\": \"2025-06-23\",\n  \"notes\": \"Withdrew for emergency\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Withdrawal reduces goal balance. Server validates amount <= saved_amount."
+          }
+        },
+        {
+          "name": "Update Contribution",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/php/goals.php?action=update_contribution", "host": ["{{base_url}}"], "path": ["php", "goals.php"], "query": [{ "key": "action", "value": "update_contribution" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{contribution_id}},\n  \"type\": \"Deposit\",\n  \"amount\": 7000,\n  \"contribution_date\": \"2025-06-23\",\n  \"notes\": \"Corrected amount\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Cannot update Automatic type contributions."
+          }
+        },
+        {
+          "name": "Delete Contribution",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/php/goals.php?action=delete_contribution", "host": ["{{base_url}}"], "path": ["php", "goals.php"], "query": [{ "key": "action", "value": "delete_contribution" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{contribution_id}}\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Cannot delete Automatic type contributions."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bills",
+      "item": [
+        {
+          "name": "Fetch All Bills",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/php/bills.php?action=fetch_all", "host": ["{{base_url}}"], "path": ["php", "bills.php"], "query": [{ "key": "action", "value": "fetch_all" }] },
+            "description": "Returns bills[], payments[], alerts[], and summary stats (bills_due_this_month, amount_due_this_month, overdue_count, next_bill, recently_paid)."
+          }
+        },
+        {
+          "name": "Create Bill",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/php/bills.php?action=create", "host": ["{{base_url}}"], "path": ["php", "bills.php"], "query": [{ "key": "action", "value": "create" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Internet Bill\",\n  \"category\": \"Internet\",\n  \"amount_due\": 1500,\n  \"due_date\": \"2025-07-01\",\n  \"provider\": \"Dialog Axiata\",\n  \"notes\": \"Fiber 100Mbps plan\",\n  \"recurrence\": \"Monthly\",\n  \"custom_interval_days\": null,\n  \"reminder_offsets\": [0, 1, 7],\n  \"custom_reminder_dates\": [],\n  \"status\": \"Active\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Category: Utilities, Housing, Internet, Loan, Insurance, Education, Subscription, Other\nRecurrence: One-time, Weekly, Monthly, Quarterly, Yearly, Custom\nreminder_offsets: array of days before due date [0,1,3,7]"
+          }
+        },
+        {
+          "name": "Update Bill",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/php/bills.php?action=update", "host": ["{{base_url}}"], "path": ["php", "bills.php"], "query": [{ "key": "action", "value": "update" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{bill_id}},\n  \"name\": \"Internet Bill (Updated)\",\n  \"category\": \"Internet\",\n  \"amount_due\": 1800,\n  \"due_date\": \"2025-07-01\",\n  \"provider\": \"Dialog Axiata\",\n  \"notes\": \"Upgraded plan\",\n  \"recurrence\": \"Monthly\",\n  \"custom_interval_days\": null,\n  \"reminder_offsets\": [0, 3, 7],\n  \"custom_reminder_dates\": [],\n  \"status\": \"Active\"\n}",
+              "options": { "raw": { "language": "json" } }
+            }
+          }
+        },
+        {
+          "name": "Mark Bill as Paid",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/php/bills.php?action=mark_paid", "host": ["{{base_url}}"], "path": ["php", "bills.php"], "query": [{ "key": "action", "value": "mark_paid" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{bill_id}},\n  \"payment_date\": \"2025-06-23\",\n  \"amount_paid\": 1500,\n  \"notes\": \"Paid via online banking\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Records payment in bill_payments table.\n- One-time bill: status becomes 'Paid'\n- Recurring bill: due_date advances to next cycle (stays 'Active')"
+          }
+        },
+        {
+          "name": "Delete Bill",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "{{base_url}}/php/bills.php?action=delete", "host": ["{{base_url}}"], "path": ["php", "bills.php"], "query": [{ "key": "action", "value": "delete" }] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": {{bill_id}}\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Hard deletes bill and all associated bill_payments (CASCADE)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Error Cases (Unauthorized)",
+      "item": [
+        {
+          "name": "Fetch Transactions (No Session)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/php/transactions.php?action=fetch_all", "host": ["{{base_url}}"], "path": ["php", "transactions.php"], "query": [{ "key": "action", "value": "fetch_all" }] },
+            "description": "Call this AFTER logout to confirm server returns {success: false, message: 'Unauthorized'}."
+          }
+        },
+        {
+          "name": "Fetch Goals (No Session)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/php/goals.php?action=fetch_all", "host": ["{{base_url}}"], "path": ["php", "goals.php"], "query": [{ "key": "action", "value": "fetch_all" }] },
+            "description": "Should return {success: false, message: 'Unauthorized'} when no session."
+          }
+        }
+      ]
+    }
+  ]
+}

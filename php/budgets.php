@@ -37,9 +37,15 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && $action === "fetch") {
 
 // POST: replace all daily, weekly, and monthly budgets
 if ($_SERVER["REQUEST_METHOD"] === "POST" && $action === "save") {
-    // Expected: { "budgets": { "daily": {...}, "weekly": {...}, "monthly": {...} } }
-    $body = json_decode(file_get_contents("php://input"), true);
-    $budgets = $body['budgets'] ?? [];
+    // Read budgets: form-urlencoded field (InfinityFree-safe) OR raw JSON body (localhost)
+    if (!empty($_POST['budgets'])) {
+        // Sent as application/x-www-form-urlencoded with budgets=<json-string>
+        $budgets = json_decode($_POST['budgets'], true) ?? [];
+    } else {
+        // Fallback: raw JSON body (localhost / direct API calls)
+        $body = json_decode(file_get_contents("php://input"), true);
+        $budgets = $body['budgets'] ?? [];
+    }
 
     $valid_categories = ['Food','Transport','Rent','Entertainment','Health','Education','Other'];
     $valid_periods = ['daily','weekly','monthly'];
